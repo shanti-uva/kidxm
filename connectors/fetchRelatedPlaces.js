@@ -2,14 +2,14 @@
  * Created by ys2n on 12/7/16.
  */
 var http = require('http');
-var flatten = require('../connectors/flattenRelationTypes').flattenRelationTypes;
+var flatten = require('../connectors/flattenRelationTypes').flattenRelationTypes; //different
 
-exports.fetchRelatedPlaces = function (kid,callback) {
+exports.fetchRelatedPlaces = function (kid,callback) { // different
 
     var restCall = {
         host: 'places.kmaps.virginia.edu',
         port: 80,
-        path: '/features/' + kid + "/related.json" // diffe
+        path: '/features/' + kid + "/related.json" // different
     };
 
     http.request(restCall, function (res) {
@@ -26,7 +26,7 @@ exports.fetchRelatedPlaces = function (kid,callback) {
         res.on('end', function () {
             try {
                 var ret = raw.join('');
-                var list = JSON.parse(ret).feature_relation_types;
+                var list = JSON.parse(ret).feature_relation_types; //different
                 var result = flatten(kid,list);
                 callback(null, result);
             }
