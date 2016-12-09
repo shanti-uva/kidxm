@@ -6,10 +6,10 @@ var solr = require('solr-client');
 var async = require('async');
 
 var asset_index_options = {
-    'host': 'kidx.shanti.virginia.edu',
-    'port': 80,
+    'host': 'localhost',
+    'port': 8983,
     'path': '/solr',
-    'core': 'kmindex'
+    'core': 'nested'
 }
 
 //var asset_index_options = {
@@ -20,10 +20,10 @@ var asset_index_options = {
 //};
 
 var term_index_options = {
-    'host': 'kidx.shanti.virginia.edu',
-    'port': 80,
+    'host': 'localhost',
+    'port': 8983,
     'path': '/solr',
-    'core': 'termindex'
+    'core': 'nested'
 }
 
 //var term_index_options = {
@@ -45,7 +45,7 @@ exports.asset_index_options = asset_index_options;
 exports.addDocs = function (docs, callback) {
     asset_client.autoCommit = true;
     asset_client.add(docs, function (err, report) {
-        // console.dir(docs);
+        console.dir(docs);
         if (err) {
             console.log(err);
         } else {

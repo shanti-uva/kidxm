@@ -1,15 +1,24 @@
 /**
  * Created by ys2n on 12/7/16.
  */
-
+const debug = require('debug')('flattenRelatedSubjects');
 var debugRelatedSubjects = false;
 var _ = require('underscore');
 
-exports.flattenRelatedSubjects = function (kid,related_subject) {
+exports.flattenRelatedSubjects = function (kmapid,related_subject) {
     if (false) {
-        console.log("flattenRelatedSubjects=>");
-        console.dir(related_subject, {depth: 3, colors: 'true'});
+        debug("flattenRelatedSubjects=>");
+        // console.dir(related_subject, {depth: 3, colors: 'true'});
     }
+
+    var s = kmapid.split("-");
+    var kid = s[1];
+    var type = s[0];
+
+    debug("kmapid = " + kmapid);
+    debug("kid = " + kid);
+    debug("flattenRelatedSubjects type = " + type);
+
 
     var relatedSubjects = related_subject.feature.category_features;
 
@@ -19,7 +28,7 @@ exports.flattenRelatedSubjects = function (kid,related_subject) {
 
     relatedSubjects.forEach(function (relatedSubject, y) {
         var flattened = {};
-        flattened["id"] = kid + "_relatedSubject_" + relatedSubject.category.id;
+        flattened["id"] = kmapid + "_relatedSubject_" + relatedSubject.category.id;
         flattened["related_subject_uid_s"] = "subjects-" + relatedSubject.category.id;
         flattened["child_type_s"] = "related_subject";
         flattened["related_subject_title_s"] = relatedSubject.category.title;
@@ -39,6 +48,7 @@ exports.flattenRelatedSubjects = function (kid,related_subject) {
         if (relatedSubject.time_units.is_range)
             flattened["related_subject_time_range_end_s"] = relatedSubject.time_units.end_date;
         flattened["related_subject_path_s"] = ancestorsToPath(relatedSubject.ancestors);
+        flattened["nest_type"] = "child";
         finalRelatedSubjects.push(flattened);
     });
     return finalRelatedSubjects;

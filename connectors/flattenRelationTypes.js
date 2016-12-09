@@ -1,85 +1,172 @@
 /**
  * Created by ys2n on 12/7/16.
  */
+const debug = require('debug')('flattenRelationTypes');
 
-var debugRelatedPlaces = false;
+var debugRelatedKmaps = false;
 var _ = require('underscore');
+var traverse = require('traverse');
+const isArray = require('util').isArray;
 
-exports.flattenRelationTypes = function (kid,relation_types) {
-    if (false) {
-        console.log("flattenRelationTypes=>");
-        console.dir(relation_types, {depth: 2, colors: 'true'});
+exports.flattenRelationTypes = function (kmapid, relation_types) {
+    debug("flattenRelationTypes");
+
+    debug ("kmapid = " + kmapid);
+
+    var s = kmapid.split('-');
+    var type = s[0];   // subjects or places.
+    var kid = s[1];
+
+    debug("flattenRelationTypes type = " + type);
+    debug("kid = " + kid);
+
+    // console.dir(relation_types, {depth: 6});
+
+    var ancestorsToPath = function (ancestors) {
+        return (_.map(ancestors, function (x) {
+            return x.id;
+        })).join('/');
+    };
+
+    // traverse(relation_types).reduce(function (acc, node) {
+    //     if (!this.isLeaf && node.label && node.code) {
+    //         acc.label = node.label;
+    //         acc.code = node.code;
+    //         // acc.count = node.features.length;
+    //     } else if (!this.isLeaf) {
+    //
+    //     }
+    //     if (!this.isLeaf && (node.id) && (node.header) && (node.ancestors)) {
+    //         // debug("path: " + ancestorsToPath(node.ancestors));
+    //         acc.path = ancestorsToPath(node.ancestors);
+    //         for (var p in node) {
+    //             if (node.hasOwnProperty(p)) {
+    //                 acc[p] = node[p];
+    //             }
+    //         }
+    //         // debug("=============");
+    //         // // console.dir(acc, { depth: 4, colors: true});
+    //         // debug("=============");
+    //     }
+    //     return acc;
+    // }, {list: []});
+
+
+    if (true) {
+        debug("flattenRelationTypes=>");
+        // console.dir(relation_types, {depth: 2, colors: 'true'});
     }
 
-    var finalRelatedPlaces = [];
+    if (!relation_types) {
+        console.error("null relation_types!");
+        relation_types = [];
+    }
 
-    var ancestorsToPath = function (ancestors) { return (_.map(ancestors, function (x) { return x.id; })).join('/'); };
+    // extract out the relation_types array
+    if (relation_types.feature_relation_types && isArray(relation_types.feature_relation_types)) {
+        relation_types = relation_types.feature_relation_types;
+    }
 
+    var finalRelatedKmaps = [];
+    var child_type = "related_" + type;  // related_places or related_subjects
     //
-    // feature_relation_types / relation_types
+    // feature_relation_types
     //
     relation_types.forEach(function (relation, y) {
-        if (debugRelatedPlaces) {
-            console.log("==>RelatedPlace");
-            console.log(JSON.stringify(relation, undefined, 3));
-        }
+            if (debugRelatedKmaps) {
+                debug("==>" + child_type);
+                debug(JSON.stringify(relation, undefined, 3));
+            }
 
-        var relatedId = kid + "_" + relation.code;
-        var relation_data = {
-            "id": relatedId,
-            "child_type_s": "relation",
-            "related_place_relation_label_s": relation.label,
-            "related_place_relation_code_s": relation.code,
-        };
+            var relatedId = kmapid + "_" + relation.code;
+            var relation_data = {};
 
-        if (debugRelatedPlaces) {
-            console.log("=== relation ================");
-            console.dir(relation);
-            console.log("=== relation data ============");
-            console.dir(relation_data);
-        }
+            console.error("RELATED_ID=" + relatedId );
 
-        //
-        // feature_relation_types / relation_types / categories
-        //
-        for (var i = 0; i < relation.categories.length; i++) {
-            var category = relation.categories[i]
-            var category_id = relation_data.id + "_" + category.id;
+            relation_data["id"] = relatedId;
+            relation_data["child_type_s"] = child_type;
+            relation_data[child_type + "_relation_label_s"] = relation.label;
+            relation_data[child_type + "_relation_code_s"] = relation.code;
+
+            if (debugRelatedKmaps) {
+                debug("=== relation ================");
+                // console.dir(relation);
+                debug("=== relation data ============");
+                // console.dir(relation_data);
+            }
+
 
             //
-            // feature_relation_types / relation_types / categories / features
+            // feature_relation_type  / categories
             //
-            for (var j = 0; j < category.features.length; j++) {
-                var feature = category.features[j];
 
-                if (debugRelatedPlaces) {
-                    console.log("Iterating features: " + j);
-                    console.dir(feature);
+            var categories;
 
-                    console.dir("The Cat's Meow:");
-                    console.dir(category);
-                }
-                var flattened = {
-                    id: category_id + "_" + feature.id,
-                    child_type_s: "related_place",
-                    related_place_id_s: "places-" + feature.id,
-                    related_place_header_s: feature.header,
-                    related_place_path_s: ancestorsToPath(feature.ancestors),
-                    related_place_feature_type_s: category.header,
-                    related_place_feature_type_id_s: category.id,
-                    related_place_feature_type_path_s: ancestorsToPath(category.ancestors.feature_type),
-                    related_place_relation_label_s: relation_data.related_place_relation_label_s,
-                    related_place_relation_code_s: relation_data.related_place_relation_code_s
-                };
+            if (relation.categories) {
+                categories = relation.categories;
+            } else {
+                categories = [{
+                    id: null,
+                    features: relation.features
+                }]
+            }
 
-                if (debugRelatedPlaces) {
-                    console.log("=== flattened related places ===");
-                    console.dir(flattened);
+            for (var i = 0; i < categories.length; i++) {
+                var category = categories[i]
+                var category_id = (category.id !== null) ? relation_data.id + "_" + category.id : relation_data.id;
+
+                //
+                // feature_relation_types / relation_types / categories / features
+                //
+                var features = category.features;
+
+                for (var j = 0; j < features.length; j++) {
+                    //
+                    // feature_relation_type / category / features
+                    //
+                    var feature = features[j];
+
+                    if (debugRelatedKmaps) {
+                        debug("Iterating features: " + j);
+                        // console.dir(feature);
+
+                        // console.dir("The Cat's Meow:");
+                        // console.dir(category);
+                    }
+
+                    var flattened = {};
+                    flattened["id"] = category_id + "_" + feature.id;
+                    flattened["child_type_s"] = child_type;
+                    flattened[child_type + "_id_s"] = type + "-" + feature.id;
+                    flattened[child_type + "_header_s"] = feature.header;
+                    flattened[child_type + "_path_s"] = ancestorsToPath(feature.ancestors);
+                    if (category.header) {
+                        flattened[child_type + "_feature_type_s"] = category.header;
+                    }
+                    if (category.id !== null) {
+                        flattened[child_type + "_feature_type_id_s"] = category.id;
+                    }
+                    if (category.ancestor) {
+                        flattened[child_type + "_feature_type_path_s"] = ancestorsToPath(category.ancestors.feature_type);
+                    }
+
+                    flattened[child_type + "_relation_label_s"] = relation_data[child_type + "_relation_label_s"];
+                    flattened[child_type + "_relation_code_s"] = relation_data[child_type + "_relation_code_s"];
+
+                    flattened["nest_type"] = "child";
+
+                    if (debugRelatedKmaps) {
+                        debug("=== flattened " + child_type + " ===");
+                        // console.dir(flattened);
+                    }
+
+                    finalRelatedKmaps.push(flattened);
+
                 }
             }
-        }
 
-        finalRelatedPlaces.push(flattened);
-    });
-    return finalRelatedPlaces;
+        }
+    )
+    ;
+    return finalRelatedKmaps;
 }

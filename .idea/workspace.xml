@@ -2,19 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20dd437e-0fc7-48f1-999c-b8791d766461" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/essays.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/flattenRelationTypes.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/kmaps.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/mediabase.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/sharedshelf.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/solrmanager.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/connectors/solrnested_connector.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tasks/populator.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/solrnested_connector_test.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" afterPath="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" afterPath="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" afterPath="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/flattenRelationTypes.js" afterPath="$PROJECT_DIR$/connectors/flattenRelationTypes.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/solrmanager.js" afterPath="$PROJECT_DIR$/connectors/solrmanager.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/solrnested_connector.js" afterPath="$PROJECT_DIR$/connectors/solrnested_connector.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/solrnested_connector_test.js" afterPath="$PROJECT_DIR$/test/solrnested_connector_test.js" />
     </list>
     <ignored path="kidxm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,30 +34,8 @@
       <file leaf-file-name="solrnested_connector.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/connectors/solrnested_connector.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="166" column="19" lean-forward="true" selection-start-line="166" selection-start-column="19" selection-end-line="166" selection-end-column="19" />
-              <folding>
-                <element signature="e#5983#6173#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fetchRelatedSubjects.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/connectors/fetchRelatedSubjects.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="309">
-              <caret line="32" column="25" lean-forward="false" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="async.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/async/dist/async.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="836" column="31" lean-forward="false" selection-start-line="836" selection-start-column="31" selection-end-line="836" selection-end-column="31" />
+            <state relative-caret-position="15">
+              <caret line="67" column="36" lean-forward="true" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -70,20 +44,8 @@
       <file leaf-file-name="fetchRelatedPlaces.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/connectors/fetchRelatedPlaces.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="174">
-              <caret line="33" column="33" lean-forward="false" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
-              <folding>
-                <element signature="e#0#38#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="flattenRelationTypes.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/connectors/flattenRelationTypes.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="11" selection-end-column="5" />
+            <state relative-caret-position="60">
+              <caret line="6" column="70" lean-forward="false" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="80" />
               <folding>
                 <element signature="e#0#38#0" expanded="false" />
               </folding>
@@ -94,19 +56,21 @@
       <file leaf-file-name="solrnested_connector_test.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test/solrnested_connector_test.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="36" column="100" lean-forward="false" selection-start-line="36" selection-start-column="100" selection-end-line="36" selection-end-column="100" />
+            <state relative-caret-position="-487">
+              <caret line="27" column="47" lean-forward="true" selection-start-line="27" selection-start-column="47" selection-end-line="27" selection-end-column="47" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/package.json">
+      <file leaf-file-name="flattenRelationTypes.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/connectors/flattenRelationTypes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="35" column="1" lean-forward="false" selection-start-line="35" selection-start-column="1" selection-end-line="35" selection-end-column="1" />
-              <folding />
+            <state relative-caret-position="173">
+              <caret line="155" column="53" lean-forward="false" selection-start-line="155" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#38#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -114,8 +78,8 @@
       <file leaf-file-name="flattenRelatedSubjects.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/connectors/flattenRelatedSubjects.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+            <state relative-caret-position="230">
+              <caret line="33" column="42" lean-forward="true" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="42" />
               <folding>
                 <element signature="e#0#38#0" expanded="false" />
               </folding>
@@ -126,18 +90,8 @@
       <file leaf-file-name="solrmanager.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/connectors/solrmanager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="772">
-              <caret line="91" column="7" lean-forward="false" selection-start-line="75" selection-start-column="3" selection-end-line="91" selection-end-column="7" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="kmaps.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/connectors/kmaps.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="31" column="23" lean-forward="false" selection-start-line="31" selection-start-column="23" selection-end-line="31" selection-end-column="23" />
+            <state relative-caret-position="720">
+              <caret line="48" column="8" lean-forward="false" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -154,36 +108,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>places</find>
-      <find>bobo</find>
-      <find>b</find>
-      <find>ancestor</find>
-      <find>zingo</find>
-      <find>(err)</find>
-      <find>err</find>
-      <find>parallel</find>
-      <find>bleempsh</find>
-      <find>console.dir</find>
-      <find>child_type_s</find>
-      <find>&quot;: &quot;</find>
-      <find>&quot; : &quot;</find>
-      <find>&quot; : r</find>
-      <find>related_place</find>
-      <find>console.log</find>
-      <find>obj</find>
+      <find>null</find>
       <find>kid</find>
-      <find>objexpo</find>
-      <find>ancestorsToPath</find>
-      <find>8888</find>
-      <find>ancestort</find>
-      <find>debugRelatedPlaces</find>
+      <find>frooky</find>
+      <find>kmapid</find>
+      <find>```````````````````````````````````````````````````````````````````````````````````````````````````ww</find>
+      <find>undefinedx</find>
+      <find>CROOKY</find>
+      <find>FETCHRELATEDSU</find>
       <find>fetchRelated</find>
-      <find>fetchRelat</find>
-      <find>depth:</find>
-      <find>==</find>
-      <find>console.</find>
+      <find>cooky</find>
+      <find>conso</find>
+      <find>==&gt;</find>
+      <find>uid</find>
+      <find>flattenRelationTypes=&gt;</find>
+      <find>undef</find>
+      <find>&quot;type = &quot;</find>
+      <find>=&gt;</find>
+      <find>type =</find>
+      <find>undefined</find>
       <find>_.</find>
-      <find>color</find>
+      <find>flatten</find>
+      <find>console.error</find>
+      <find>console</find>
+      <find>console.dir</find>
+      <find>RELATED_ID</find>
+      <find>add</find>
+      <find>console.log</find>
+      <find>console.</find>
+      <find>kmass</find>
+      <find>solrman</find>
     </findStrings>
     <replaceStrings>
       <replace>related</replace>
@@ -194,7 +148,18 @@
       <replace>related_subject</replace>
       <replace>&quot;] = &quot;</replace>
       <replace>&quot;] = r</replace>
+      <replace>flattened[&quot;realted</replace>
+      <replace>flattened[&quot;related</replace>
+      <replace>&quot;]=</replace>
+      <replace>;</replace>
+      <replace>RelatedKmaps</replace>
+      <replace>//</replace>
+      <replace>// console.dir</replace>
+      <replace>debug</replace>
     </replaceStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -208,15 +173,15 @@
         <option value="$PROJECT_DIR$/bin/kidx.js" />
         <option value="$PROJECT_DIR$/tasks/populator.js" />
         <option value="$PROJECT_DIR$/connectors/mockconnector.js" />
-        <option value="$PROJECT_DIR$/connectors/solrmanager.js" />
         <option value="$PROJECT_DIR$/connectors/mediabase.js" />
         <option value="$PROJECT_DIR$/package.json" />
-        <option value="$PROJECT_DIR$/test/solrnested_connector_test.js" />
         <option value="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" />
-        <option value="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" />
         <option value="$PROJECT_DIR$/connectors/solrnested_connector.js" />
         <option value="$PROJECT_DIR$/connectors/flattenRelationTypes.js" />
+        <option value="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" />
         <option value="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" />
+        <option value="$PROJECT_DIR$/connectors/solrmanager.js" />
+        <option value="$PROJECT_DIR$/test/solrnested_connector_test.js" />
       </list>
     </option>
   </component>
@@ -276,20 +241,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="kidxm" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kidxm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="kidxm" />
-              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
               <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
             </PATH_ELEMENT>
           </PATH>
@@ -440,35 +391,44 @@
       <workItem from="1480601937219" duration="312000" />
       <workItem from="1480602270826" duration="27677000" />
       <workItem from="1480956613385" duration="71000" />
-      <workItem from="1480956689390" duration="62406000" />
+      <workItem from="1480956689390" duration="111807000" />
     </task>
+    <task id="LOCAL-00001" summary="Notated differences in prep for refactoring.">
+      <created>1481147965682</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1481147965682</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="113287000" />
+    <option name="totallyTimeSpent" value="162688000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24248926" sideWeight="0.4321267" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.46776083" sideWeight="0.51944447" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.49444443" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.51502144" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" x="100" y="100" width="1240" height="700" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24248926" sideWeight="0.5678733" order="2" side_tool="true" content_ui="tabs" x="545" y="335" width="350" height="230" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.46746987" sideWeight="0.48055556" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.4841629" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24248926" sideWeight="0.37751004" order="2" side_tool="true" content_ui="tabs" x="545" y="335" width="350" height="230" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4" sideWeight="0.48055556" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24248926" sideWeight="0.62249" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.48497853" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.4841629" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25035766" sideWeight="0.54988396" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3987952" sideWeight="0.49166667" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,6 +445,10 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Notated differences in prep for refactoring." />
+    <option name="LAST_COMMIT_MESSAGE" value="Notated differences in prep for refactoring." />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints-dialog>
@@ -495,7 +459,7 @@
           <properties />
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="27" />
+      <option name="time" value="28" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -504,9 +468,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5983#6173#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -658,80 +620,78 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/connectors/solrmanager.js">
+    <entry file="file://$PROJECT_DIR$/node_modules/async/dist/async.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="772">
-          <caret line="91" column="7" lean-forward="false" selection-start-line="75" selection-start-column="3" selection-end-line="91" selection-end-column="7" />
+        <state relative-caret-position="138">
+          <caret line="5069" column="13" lean-forward="false" selection-start-line="5069" selection-start-column="13" selection-end-line="5069" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="35" column="1" lean-forward="false" selection-start-line="35" selection-start-column="1" selection-end-line="35" selection-end-column="1" />
+        <state relative-caret-position="120">
+          <caret line="8" column="10" lean-forward="false" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/async/dist/async.js">
+    <entry file="file://$PROJECT_DIR$/connectors/fetchRelatedSubjects.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="836" column="31" lean-forward="false" selection-start-line="836" selection-start-column="31" selection-end-line="836" selection-end-column="31" />
+        <state relative-caret-position="73">
+          <caret line="33" column="18" lean-forward="false" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/connectors/fetchRelatedPlaces.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="174">
-          <caret line="33" column="33" lean-forward="false" selection-start-line="33" selection-start-column="33" selection-end-line="33" selection-end-column="33" />
+        <state relative-caret-position="60">
+          <caret line="6" column="70" lean-forward="false" selection-start-line="6" selection-start-column="60" selection-end-line="6" selection-end-column="80" />
           <folding>
             <element signature="e#0#38#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/solrnested_connector_test.js">
+    <entry file="file://$PROJECT_DIR$/connectors/flattenRelationTypes.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="36" column="100" lean-forward="false" selection-start-line="36" selection-start-column="100" selection-end-line="36" selection-end-column="100" />
+        <state relative-caret-position="173">
+          <caret line="155" column="53" lean-forward="false" selection-start-line="155" selection-start-column="0" selection-end-line="156" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#38#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/connectors/solrmanager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="720">
+          <caret line="48" column="8" lean-forward="false" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/connectors/solrnested_connector.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="166" column="19" lean-forward="true" selection-start-line="166" selection-start-column="19" selection-end-line="166" selection-end-column="19" />
-          <folding>
-            <element signature="e#5983#6173#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/connectors/fetchRelatedSubjects.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
-          <caret line="32" column="25" lean-forward="false" selection-start-line="32" selection-start-column="25" selection-end-line="32" selection-end-column="25" />
+        <state relative-caret-position="15">
+          <caret line="67" column="36" lean-forward="true" selection-start-line="67" selection-start-column="36" selection-end-line="67" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/connectors/flattenRelationTypes.js">
+    <entry file="file://$PROJECT_DIR$/test/solrnested_connector_test.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="8" column="0" lean-forward="false" selection-start-line="8" selection-start-column="0" selection-end-line="11" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#38#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="-487">
+          <caret line="27" column="47" lean-forward="true" selection-start-line="27" selection-start-column="47" selection-end-line="27" selection-end-column="47" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/connectors/flattenRelatedSubjects.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="11" column="5" lean-forward="false" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
+        <state relative-caret-position="230">
+          <caret line="33" column="42" lean-forward="true" selection-start-line="33" selection-start-column="19" selection-end-line="33" selection-end-column="42" />
           <folding>
             <element signature="e#0#38#0" expanded="false" />
           </folding>
