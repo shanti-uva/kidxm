@@ -194,7 +194,7 @@ exports.getDocumentsByKmapIdStale = function(kmapid, staletime, callback) {
                     }
                 ],
                 function(err,finalItemIdList) {
-                    console.dir(finalItemIdList);
+                    log.info("%j",finalItemIdList);
                     async.mapLimit(finalItemIdList, 2, exports.getDocument,
                         function(err,doc) {
                             // console.log(JSON.stringify(doc,undefined,3));

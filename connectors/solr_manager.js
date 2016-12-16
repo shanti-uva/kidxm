@@ -4,13 +4,15 @@
 
 var solr = require('solr-client');
 var async = require('async');
+var log = require('tracer').colorConsole({level: 'warn'});
 
 var asset_index_options = {
-    'host': 'localhost',
-    'port': 8983,
+    'host': 'ss558499-us-east-1-aws.measuredsearch.com',
+    'port': 443,
+    'secure': true,
     'path': '/solr',
-    'core': 'nested'
-}
+    'core': 'kmassets_dev'
+};
 
 //var asset_index_options = {
 //    'host': 'drupal-index.shanti.virginia.edu',
@@ -20,11 +22,12 @@ var asset_index_options = {
 //};
 
 var term_index_options = {
-    'host': 'localhost',
-    'port': 8983,
+    'host': 'ss558499-us-east-1-aws.measuredsearch.com',
+    'port': 443,
+    'secure': true,
     'path': '/solr',
-    'core': 'nested'
-}
+    'core': 'kmterms_dev'
+};
 
 //var term_index_options = {
 //    'host': 'drupal-index.shanti.virginia.edu',
@@ -34,18 +37,21 @@ var term_index_options = {
 //};
 
 var asset_client = solr.createClient(asset_index_options);
+asset_client.basicAuth("solradmin","");  ///  DON'T CHECK THIS IN!
+
 var term_client = solr.createClient(term_index_options);
-
-
-
+term_client.basicAuth("solradmin","");  ///  DON'T CHECK THIS IN!
 
 exports.term_index_options = term_index_options;
 exports.asset_index_options = asset_index_options;
 
-exports.addDocs = function (docs, callback) {
+exports.addDocs = function (docs, user_pwd_auth, callback) {
     asset_client.autoCommit = true;
+    if (!_.isEmpty(user_pwd_auth)) {
+        asset_client.basicAuth(user_pwd_auth);
+    }
     asset_client.add(docs, function (err, report) {
-        console.dir(docs);
+        // log.info("%j",docs);
         if (err) {
             console.log(err);
         } else {
@@ -54,29 +60,38 @@ exports.addDocs = function (docs, callback) {
         callback(err, report);
     });
 
-}
+};
 
-exports.removeDoc = function (uid, callback) {
-    console.log("removeDoc called with uid = " + uid + " and callback = " + callback);
-    asset_client.autoCommit=false;
-    asset_client.delete("uid",uid, function(err,x) {
-        // console.log("CALLBACK TO removeDoc");
-        console.dir("err: " + err);
-        console.dir("doc: " + x);
-    });
-    asset_client.commit();
-    if (callback) {
-        callback(null,null);
+exports.removeDoc = function (uid, user_pwd_auth, callback) {
+    if (!_.isEmpty(user_pwd_auth)) {
+        asset_client.basicAuth(user_pwd_auth);
     }
-}
+    console.log("removeDoc called with uid = " + uid + " and callback = " + callback);
+    asset_client.autoCommit = false;
+    asset_client.delete("uid", uid, function (err, x) {
+        if (err) {
+            log.info("%j", err);
+            asset_client.rollback(err, function () {
+            });   // anything to handle after a rollback?
+        } else {
+            log.info("%j", x);
+            asset_client.commit();
+        }
+    });
+
+    if (callback) {
+        callback(null, null);
+    }
+};
 
 exports.lastUpdated = function (solrclient, uid, callback) {
-    var query = solrclient.createQuery().q("uid:" + uid)
+    var query = solrclient.createQuery().q("uid:" + uid);
 
     solrclient.search(query, function (err, obj) {
         if (err) {
+
             console.log("lastUpdated() Error using solrclient: " + JSON.stringify(solrclient.options));
-            console.dir(err);
+            log.info("%j", err);
         } else {
             console.log("assetLastUpdated(): " + JSON.stringify(obj, undefined, 2));
             if (obj.response.numFound == 0) {
@@ -90,15 +105,15 @@ exports.lastUpdated = function (solrclient, uid, callback) {
 
         }
     });
-}
+};
 
 exports.assetLastUpdated = function (uid, callback) {
-    exports.lastUpdated(asset_client,uid, callback);
-}
+    exports.lastUpdated(asset_client, uid, callback);
+};
 
 exports.termLastUpdated = function (uid, callback) {
     exports.lastUpdated(term_client, uid, callback);
-}
+};
 
 exports.getAssetEtag = function (uid, callback) {
     var query = asset_client.createQuery().q("uid:" + uid).fl("etag");
@@ -106,7 +121,7 @@ exports.getAssetEtag = function (uid, callback) {
     asset_client.search(query, function (err, obj) {
         if (err) {
             console.log("getAssetEtag() Error:");
-            console.dir(err);
+            log.info("%j", err);
         } else {
             // console.log("getAssetEtag(): " + JSON.stringify(obj,undefined,2));
             if (obj.response.numFound == 0) {
@@ -117,38 +132,38 @@ exports.getAssetEtag = function (uid, callback) {
             }
         }
     });
-}
+};
 
 exports.getTermEtag = function (kid, callback) {
     const RETRY_LIMIT = 3;
-    var query =  term_client.createQuery().q("uid:" + kid).fl("etag,_version_i");
+    var query = term_client.createQuery().q("uid:" + kid).fl("etag,_version_i");
 
 
     //   SOMETHING IS WRONG HERE...   WHAT IS IT?
     //   WHAT CONSTITUTES SUCCESS, and WHAT CONSTITUTES FAILURE HERE?
 
     async.retry(RETRY_LIMIT, function (callback, results) {
-        // console.log("Trying... "  + "kid = " + kid);
+        // log.log("Trying... "  + "kid = " + kid);
         term_client.search(query, function (err, obj) {
             if (err) {
-                console.log("getTermEtag() Error for kid = " + kid + ":");
-                console.dir(err);
+                log.log("getTermEtag() Error for kid = " + kid + ":");
+                log.info("%j", err);
                 callback(err);
             } else {
-                // console.log("getTermEtag(): " + JSON.stringify(obj,undefined,2));
+                // log.log("getTermEtag(): " + JSON.stringify(obj,undefined,2));
                 if (obj.response.numFound == 0) {
-                    console.log("calling back null,null ");
+                    log.log("calling back null,null ");
                     callback(null, null);
                 } else if (obj.response.docs[0].etag) {
-                    callback(null, {'etag':obj.response.docs[0].etag, 'version':obj.response.docs[0]._version_i });
+                    callback(null, {'etag': obj.response.docs[0].etag, 'version': obj.response.docs[0]._version_i});
                 }
             }
 
         });
-    },  function (err, result) {
-        callback(err,result);
+    }, function (err, result) {
+        callback(err, result);
     });
-}
+};
 
 
 exports.getTermCheckSum = function (uid, callback) {
@@ -158,13 +173,13 @@ exports.getTermCheckSum = function (uid, callback) {
 
         term_client.search(query, function (err, obj) {
             if (err) {
-                console.log("getTermCheckSum() Error:");
-                console.dir(err);
+                log.log("getTermCheckSum() Error:");
+                log.info("%j", err);
                 callback(err, null);
             } else {
-                // console.log("getTermCheckSum(): " + JSON.stringify(obj,undefined,2));
+                // log.log("getTermCheckSum(): " + JSON.stringify(obj,undefined,2));
                 if (obj.response.numFound == 0) {
-                    console.log("calling back null,null ");
+                    log.log("calling back null,null ");
                     callback(null, null);
                 } else if (obj.response.docs[0].checksum) {
                     callback(null, obj.response.docs[0].checksum);
@@ -174,41 +189,41 @@ exports.getTermCheckSum = function (uid, callback) {
             }
         });
     } catch (e) {
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR >>>>>>>>>>>>>>>>>>>>>");
+        log.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR >>>>>>>>>>>>>>>>>>>>>");
         callback(e);
     }
-}
+};
 
 
 exports.addTerms = function (terms, callback, commit) {
     commit = commit || true;
     term_client.autoCommit = true;
-    console.log("adding to " + JSON.stringify(term_index_options));
+    log.debug("adding to " + JSON.stringify(term_index_options));
     term_client.add(terms, function (err, report) {
         if (err) {
-            console.log(err);
+            log.log(err);
         } else {
-            // console.log(report);
-		if (commit) {
-			term_client.commit();
-		}
+            // log.log(report);
+            if (commit) {
+                term_client.commit();
+            }
         }
         callback(err, report);
     });
-}
+};
 
 exports.getAssetDocs = function (service, callback) {
-    //console.error("service = " + service);
-     var query = asset_client.createQuery().q({"service":service}).fl("id,service").rows(30000);
+    //log.error("service = " + service);
+    var query = asset_client.createQuery().q({"service": service}).fl("id,service").rows(30000);
     asset_client.search(query, function (err, obj) {
         if (err) {
-            console.log("getAssetDocs() Error:");
-            console.dir(err);
+            log.log("getAssetDocs() Error:");
+            log.info("%j", err);
             callback(err);
         } else {
-            // console.log("getAssetDocs(): " + JSON.stringify(obj,undefined,2));
+            // log.log("getAssetDocs(): " + JSON.stringify(obj,undefined,2));
             callback(null, obj.response.docs);
         }
     });
-}
+};
 

@@ -167,12 +167,12 @@ exports.getDocument = function (docid, callback) {
                             // console.log("HUHUHUHUHUH: " + this.key);
                             if (this.node && this.key === "key") {
 
-                                //console.dir("PARENTS OF: " + this.node);
-                                //console.dir(this);
+                                //log.info("%j","PARENTS OF: " + this.node);
+                                //log.info("%j",this);
                                 var path = [];
                                 this.parents.map(function (x, y) {
                                     if (x) {
-                                        // console.dir(x.parents);
+                                        // log.info("%j",x.parents);
                                         var rents = x.parents.filter(function (x) {
                                             return (x.node.key ? true : false);
                                         });
@@ -187,11 +187,11 @@ exports.getDocument = function (docid, callback) {
 
                                 // console.log (type + "-" + this.node + " : "  + JSON.stringify(path));
 
-                                // console.dir(path);
+                                // log.info("%j",path);
                             }
                         });
                         console.log("DONE MAPPING:");
-                        //console.dir (map);
+                        //log.info("%j", (map);
 
                         // cache the map
                         if (cache.set(type, map)) {
@@ -202,7 +202,7 @@ exports.getDocument = function (docid, callback) {
                         callback(null, map);
                     });
                     res.on('error', function (err) {
-                        console.dir(err);
+                        log.info("%j",err);
                     });
                 }).on('error', function (err) {
                 console.error(err);
@@ -210,7 +210,7 @@ exports.getDocument = function (docid, callback) {
 
         } else {
             console.log("Using cached parent map for " + type);
-            // console.dir(cached_map);
+            // log.info("%j",cached_map);
             callback(null, cached_map);
         }
     }
@@ -224,7 +224,7 @@ exports.getDocument = function (docid, callback) {
             method: 'GET'
         };
 
-        //console.dir(parentMap);
+        //log.info("%j",parentMap);
 
         if (_.isEmpty(parentMap)) {
             console.error("EMPTY parentMap!");
@@ -259,7 +259,7 @@ exports.getDocument = function (docid, callback) {
                             console.log("parentMap now has size of: " + _.size(parentMap));
 
                             if (!_.isEmpty(parentMap)) {
-                                // console.dir (parentMap);
+                                // log.info("%j", (parentMap);
                                 doc.kmapid = doc.kmapid.map(function (x) {
                                     if (parentMap[x]) {
                                         return parentMap[x];
@@ -272,7 +272,7 @@ exports.getDocument = function (docid, callback) {
                             }
                             doc.kmapid = _.unique(doc.kmapid);
                             console.log("Return from mediabase: ");
-                            console.dir(doc);
+                            log.info("%j",doc);
                             callback(null, doc);
                             break;
                         case 403:
@@ -297,7 +297,7 @@ exports.getDocument = function (docid, callback) {
 
                 }
                 catch (err) {
-                    console.dir(err);
+                    log.info("%j",err);
                     console.log(err.stack);
                     callback(err, doc);
                 }
@@ -331,14 +331,16 @@ exports.getDocumentsByDocIds = function (docids, callback) {
     async.waterfall((
         [
             function (cb) {
-                async.mapLimit(docids, 10, exports.getDocument,
-                    function (err, doc) {
-                        console.log("DONE");
-                        if (err) { console.log("ERROR: " + err); }
-                        cb(err, doc);
+            async.mapLimit(docids, 10, exports.getDocument,
+                function (err, doc) {
+                    console.log("DONE");
+                    if (err) {
+                        console.log("ERROR: " + err);
                     }
-                );
-            }
+                    cb(err, doc);
+                }
+            );
+        }
         ],
             function (err, results) {
                 if (err) {
@@ -384,7 +386,7 @@ exports.getDocumentsByKmapIdStale = function (kmapid, staletime, callback) {
                         }
                     ],
                     function (err, finalItemIdList) {
-                        console.dir(finalItemIdList);
+                        log.info("%j",finalItemIdList);
                         async.mapLimit(finalItemIdList, 2, exports.getDocument,
                             function (err, doc) {
                                 // console.log(JSON.stringify(doc,undefined,3));

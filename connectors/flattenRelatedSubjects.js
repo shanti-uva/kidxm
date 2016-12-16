@@ -8,7 +8,7 @@ var _ = require('underscore');
 exports.flattenRelatedSubjects = function (kmapid,related_subject) {
     if (false) {
         debug("flattenRelatedSubjects=>");
-        // console.dir(related_subject, {depth: 3, colors: 'true'});
+        // log.info("%j",related_subject, {depth: 3, colors: 'true'});
     }
 
     var s = kmapid.split("-");
@@ -19,7 +19,6 @@ exports.flattenRelatedSubjects = function (kmapid,related_subject) {
     debug("kid = " + kid);
     debug("flattenRelatedSubjects type = " + type);
 
-
     var relatedSubjects = related_subject.feature.category_features;
 
     var finalRelatedSubjects = [];
@@ -29,8 +28,10 @@ exports.flattenRelatedSubjects = function (kmapid,related_subject) {
     relatedSubjects.forEach(function (relatedSubject, y) {
         var flattened = {};
         flattened["id"] = kmapid + "_relatedSubject_" + relatedSubject.category.id;
+        // flattened["uid"] = kmapid + "_relatedSubject_" + relatedSubject.category.id;
         flattened["related_subject_uid_s"] = "subjects-" + relatedSubject.category.id;
-        flattened["child_type_s"] = "related_subject";
+        flattened["block_child_type"] = "related_subject";
+        flattened["block_type"] = "child";
         flattened["related_subject_title_s"] = relatedSubject.category.title;
         flattened["related_subject_category_id_i"] = relatedSubject.category.id;
         flattened["related_subject_caption_s"] = relatedSubject.category.caption;
@@ -48,7 +49,6 @@ exports.flattenRelatedSubjects = function (kmapid,related_subject) {
         if (relatedSubject.time_units.is_range)
             flattened["related_subject_time_range_end_s"] = relatedSubject.time_units.end_date;
         flattened["related_subject_path_s"] = ancestorsToPath(relatedSubject.ancestors);
-        flattened["nest_type"] = "child";
         finalRelatedSubjects.push(flattened);
     });
     return finalRelatedSubjects;

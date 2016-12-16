@@ -252,7 +252,7 @@ exports.getKmapsDocument = function (kmapid, callback) {
                                     var names = traverse(napi_obj).reduce(function (acc, x) {
                                         if (x && x.name && this.parent.key === "names" && typeof x !== 'string') {
                                             //console.log("============");
-                                            //console.dir(x);
+                                            //log.info("%j",x);
                                             //console.log("============");
                                             var joined = "name_"
 
@@ -271,7 +271,7 @@ exports.getKmapsDocument = function (kmapid, callback) {
                                         }
                                         return acc;
                                     }, {});
-                                    //console.dir(names);
+                                    //log.info("%j",names);
                                     _.extend(doc, names);
                                     doc.checksum = checksum(doc);
                                     callback(null, doc);
