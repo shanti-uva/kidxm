@@ -2,20 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="20dd437e-0fc7-48f1-999c-b8791d766461" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/connectors/solrmanager.js" afterPath="$PROJECT_DIR$/connectors/solr_manager.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/connectors/solrnested_connector.js" afterPath="$PROJECT_DIR$/connectors/solr_nested_connector.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bin/kidx.js" afterPath="$PROJECT_DIR$/bin/kidx.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" afterPath="$PROJECT_DIR$/connectors/fetchRelatedPlaces.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" afterPath="$PROJECT_DIR$/connectors/fetchRelatedSubjects.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" afterPath="$PROJECT_DIR$/connectors/flattenRelatedSubjects.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/flattenRelationTypes.js" afterPath="$PROJECT_DIR$/connectors/flattenRelationTypes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/kmaps.js" afterPath="$PROJECT_DIR$/connectors/kmaps.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/mediabase.js" afterPath="$PROJECT_DIR$/connectors/mediabase.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/connectors/sharedshelf.js" afterPath="$PROJECT_DIR$/connectors/sharedshelf.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tasks/populator.js" afterPath="$PROJECT_DIR$/tasks/populator.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/solrnested_connector_test.js" afterPath="$PROJECT_DIR$/test/solrnested_connector_test.js" />
     </list>
     <ignored path="kidxm.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -86,8 +73,8 @@
       <file leaf-file-name="solr_manager.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/connectors/solr_manager.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="167">
-              <caret line="42" column="35" lean-forward="false" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
+            <state relative-caret-position="-463">
+              <caret line="57" column="32" lean-forward="true" selection-start-line="57" selection-start-column="32" selection-end-line="57" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -473,7 +460,7 @@
       <workItem from="1480602270826" duration="27677000" />
       <workItem from="1480956613385" duration="71000" />
       <workItem from="1480956689390" duration="172293000" />
-      <workItem from="1481664714050" duration="53024000" />
+      <workItem from="1481664714050" duration="53100000" />
     </task>
     <task id="LOCAL-00001" summary="Notated differences in prep for refactoring.">
       <created>1481147965682</created>
@@ -489,22 +476,29 @@
       <option name="project" value="LOCAL" />
       <updated>1481322783967</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="working version">
+      <created>1481924143638</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1481924143638</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="276198000" />
+    <option name="totallyTimeSpent" value="276274000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1595136" sideWeight="0.6050269" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1595136" sideWeight="0.6050269" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.51502144" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891566" sideWeight="0.48497853" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.48497853" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24248926" sideWeight="0.39497307" order="2" side_tool="true" content_ui="tabs" x="453" y="411" width="350" height="230" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.48055556" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24964234" sideWeight="0.4841629" order="1" side_tool="false" content_ui="tabs" />
@@ -556,9 +550,12 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Notated differences in prep for refactoring." />
     <MESSAGE value="First working version (write only)" />
-    <option name="LAST_COMMIT_MESSAGE" value="First working version (write only)" />
+    <MESSAGE value="working version" />
+    <option name="LAST_COMMIT_MESSAGE" value="working version" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -923,8 +920,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/connectors/solr_manager.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="42" column="35" lean-forward="false" selection-start-line="42" selection-start-column="35" selection-end-line="42" selection-end-column="35" />
+        <state relative-caret-position="-463">
+          <caret line="57" column="32" lean-forward="true" selection-start-line="57" selection-start-column="32" selection-end-line="57" selection-end-column="32" />
           <folding />
         </state>
       </provider>
