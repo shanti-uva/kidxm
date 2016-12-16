@@ -40,7 +40,7 @@ var term_index_options = {
 //  Might want different SOLR WRITE AND READ CLIENTS
 
 var solrclient = solr.createClient(term_index_options);
-solrclient.basicAuth("solradmin","");  ///  DON'T CHECK PASSWORD IN!   REFACTOR!
+solrclient.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
 
 
 const JSON = require('circular-json');
@@ -104,7 +104,7 @@ var getKmapDocTree = function (uid, cb) {
         .rows(8000);
     log.info(query);
 
-    solrclient.basicAuth("solradmin","");  ///  DON'T CHECK THIS IN!
+    solrclient.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
     solrclient.search(query, function (e, fullResp) {
         log.info("callback from solr-client.search");
         if (e) {

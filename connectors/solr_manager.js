@@ -37,10 +37,11 @@ var term_index_options = {
 //};
 
 var asset_client = solr.createClient(asset_index_options);
-asset_client.basicAuth("solradmin","");  ///  DON'T CHECK THIS IN!
+asset_client.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
 
 var term_client = solr.createClient(term_index_options);
-term_client.basicAuth("solradmin","");  ///  DON'T CHECK THIS IN!
+term_client.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
+
 
 exports.term_index_options = term_index_options;
 exports.asset_index_options = asset_index_options;
