@@ -26,6 +26,7 @@ exports.fetchRelatedPlaces = function (kmapid,callback) {
 try {
     http.request(restCall, function (res) {
         var raw = [];
+        log.debug(JSON.stringify(res.headers,undefined,3));
         res.setEncoding('utf8');
         res.on('error', function (e) {
             callback(e, null);
@@ -36,12 +37,15 @@ try {
         });
 
         res.on('end', function () {
+
             try {
                 var ret = raw.join('');
-
-                // log.info("%j",ret);
-
                 var list = JSON.parse(ret);
+
+                log.debug("========" + JSON.stringify(list, undefined,3));
+
+
+
                 var result = flatten(kmapid,list);
 
                 log.debug ("Returning %j", result );

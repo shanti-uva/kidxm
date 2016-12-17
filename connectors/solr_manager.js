@@ -37,11 +37,10 @@ var term_index_options = {
 //};
 
 var asset_client = solr.createClient(asset_index_options);
-asset_client.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
+asset_client.basicAuth("solradmin","");  // TODO: REFACTOR
 
 var term_client = solr.createClient(term_index_options);
-term_client.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
-
+term_client.basicAuth("solradmin","");  // TODO: REFACTOR
 
 exports.term_index_options = term_index_options;
 exports.asset_index_options = asset_index_options;
@@ -54,9 +53,9 @@ exports.addDocs = function (docs, user_pwd_auth, callback) {
     asset_client.add(docs, function (err, report) {
         // log.info("%j",docs);
         if (err) {
-            console.log(err);
+            log.warn(err);
         } else {
-            console.log(report);
+            log.info(report);
         }
         callback(err, report);
     });
@@ -67,7 +66,7 @@ exports.removeDoc = function (uid, user_pwd_auth, callback) {
     if (!_.isEmpty(user_pwd_auth)) {
         asset_client.basicAuth(user_pwd_auth);
     }
-    console.log("removeDoc called with uid = " + uid + " and callback = " + callback);
+    log.info("removeDoc called with uid = " + uid + " and callback = " + callback);
     asset_client.autoCommit = false;
     asset_client.delete("uid", uid, function (err, x) {
         if (err) {
@@ -91,7 +90,7 @@ exports.lastUpdated = function (solrclient, uid, callback) {
     solrclient.search(query, function (err, obj) {
         if (err) {
 
-            console.log("lastUpdated() Error using solrclient: " + JSON.stringify(solrclient.options));
+            log.info("lastUpdated() Error using solrclient: " + JSON.stringify(solrclient.options));
             log.info("%j", err);
         } else {
             console.log("assetLastUpdated(): " + JSON.stringify(obj, undefined, 2));

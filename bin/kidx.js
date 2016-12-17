@@ -6,8 +6,7 @@
  *
  * Created by ys2n on 11/28/16.
  */
-
-var log = require('tracer').colorConsole({level:'debug'}) ;
+var log = require('tracer').colorConsole({level:'warn'}) ;
 
 const pkg = require('../package');
 const prog = require('commander');
@@ -40,7 +39,7 @@ var term_index_options = {
 //  Might want different SOLR WRITE AND READ CLIENTS
 
 var solrclient = solr.createClient(term_index_options);
-solrclient.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
+solrclient.basicAuth("solradmin","");  // TODO: REFACTOR
 
 
 const JSON = require('circular-json');
@@ -98,24 +97,24 @@ var getKmapDocTree = function (uid, cb) {
 
     var query = solrclient.createQuery()
         .q("ancestor_ids_generic:" + id)
-        .fl('id')
+        .fl('id', '_timestamp_')
         .matchFilter("tree", type)
-        .sort({'ancestor_id_path': 'asc', 'id': 'asc'})
+        .sort({'ancestor_id_path': 'desc', 'id': 'desc'})
         .rows(8000);
     log.info(query);
 
-    solrclient.basicAuth("solradmin","");  // TODO: REFACTOR! CENTRALIZE BASIC AUTH
+    solrclient.basicAuth("solradmin","");  // TODO: REFACTOR
     solrclient.search(query, function (e, fullResp) {
         log.info("callback from solr-client.search");
         if (e) {
-            log.debyg("Error from solrclient: " + JSON.stringify(solrclient.options));
-            log.info("ERROR:" + e);
+            log.debug("Error from solrclient: " + JSON.stringify(solrclient.options));
+            log.error("ERROR:" + e);
             cb(e);
         } else {
-            // log.info("%j",fullResp);
+            log.error("%j",fullResp);
             // log.info("NUMNUM: " + oo.response.numFound);
             // log.info("next cursorMark: " + fullResp.nextCursorMark);
-            log.info("Returning:  " + fullResp.response.docs.length);
+            // log.info("Returning:  " + fullResp.response.docs.length);
             cb(null, fullResp);
         }
     });
@@ -124,7 +123,7 @@ var getKmapDocTree = function (uid, cb) {
 
 var addDocsToSolr = function (docs, callback) {
     log.debug(docs.length + " docs.");
-    log.debug(JSON.stringify(docs));
+    log.debug(JSON.stringify(docs,undefined,3));
     log.info(_.map(docs, function(doc) { return doc.uid + " (" + doc.header +"):    " + doc.ancestors.join("/")}));
 
     solrmanager.addTerms(docs, function (err, out) {
@@ -136,9 +135,9 @@ var addDocsToSolr = function (docs, callback) {
 };
 
 process.on('uncaughtException', function (err) {
-    console.error(err.message);
-    console.debug(err.stack);
-    console.log("Node NOT Exiting...");
+    log.error(err.message);
+    log.error(err.stack);
+    log.log("Node NOT Exiting...");
 });
 
 
@@ -160,7 +159,14 @@ prog.command("populate <start>")
         getKmapDocTree(domain, function (err, resp) {
             var docs = resp.response.docs;
 
-            var process = function (doc, bc) {
+            var munge = function (doc, bc) {
+
+                // var ts = Date.parse(doc._timestamp_);
+                var now = new Date().getTime();
+
+                // log.error("ts  = " + ts);
+                // log.error("now = " + now);
+
                 async.waterfall(
                     [
                         async.apply(getDocument, doc.id),
@@ -174,9 +180,9 @@ prog.command("populate <start>")
                 );
             }
 
-            log.warn('DOCS:    %j', docs);
+            log.debug('DOCS:    %j', docs);
 
-            async.eachLimit(docs, POOLSIZE, process, function (err, result) {
+            async.eachLimit(docs, POOLSIZE, munge, function (err, result) {
                 if (err) {
                     log.error(err);
                 }
