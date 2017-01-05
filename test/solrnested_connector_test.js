@@ -22,17 +22,17 @@ const sourceConfig = {
 var solrclient = solr.createClient(sourceConfig);
 
 kmapid_fixtures = [
-    {type: "subjects", id: "subjects-6403", name: "Tibet and Himalayas"},
-    {type: "subjects", id: "subjects-2328", name: "By pupose to be achieved"},
-    {type: "subjects", id: "subjects-829", name: ""},
-    {type: "places", id: "places-13656", name: "United States of America"},
-    {type: "places", id: "places-13736", name: ""},
-    {type: "places", id: "places-433", name: "Sera Monastery"},
-    {type: "places", id: "places-434", name: ""},
-    {type: "places", id: "places-2", name: "Tibet Autonomous Region"},
-    {type: "places", id: "places-435", name: ""},
-    {type: "places", id: "places-637", name: "Lhasa"},
-
+    // {type: "places", id: "places-637", name: "Lhasa"},
+    {type: "places", id: "places-22675", name: ""},
+    // {type: "subjects", id: "subjects-6403", name: "Tibet and Himalayas"},
+    // {type: "subjects", id: "subjects-2328", name: "By pupose to be achieved"},
+    // {type: "subjects", id: "subjects-829", name: ""},
+    // {type: "places", id: "places-13656", name: "United States of America"},
+    // {type: "places", id: "places-13736", name: ""},
+    // {type: "places", id: "places-433", name: "Sera Monastery"},
+    // {type: "places", id: "places-434", name: ""},
+    // {type: "places", id: "places-2", name: "Tibet Autonomous Region"},
+    // {type: "places", id: "places-435", name: ""},
 ];
 
 if (false) {
@@ -53,10 +53,20 @@ if (false) {
     };
 }
 
-if (false) {
+if (true) {
     kmapid_fixtures.forEach(
         function (x) {
             exports["testGetDocument-" + x.id] = function (test) {
+
+                process.env.solr_write_user = "solradmin";
+                process.env.solr_write_password = "IdskBsk013";
+                process.env.solr_write_force = false;
+                process.env.solr_write_stalethresh = 360000 * 1000; // (3600 seconds)
+
+                solrnested.getDocument(x.id, function(x,y) {
+                    console.error(JSON.stringify(y, undefined, 2));
+                })
+
                 test.expect(1);
 
                 if (_.isEmpty(x)) {
@@ -96,7 +106,7 @@ var worker = function (solrResp, success_cb) {
 
 
 
-if (true) {
+if (false) {
 
     const POOLSIZE = 1; // number of workers
 
@@ -104,6 +114,7 @@ if (true) {
         function (x) {
             log.info(x.id);
             exports["testWalk-" + x.id] = function (test) {
+
                 test.expect(1);
                 log.info("test");
                 var mark = "*";

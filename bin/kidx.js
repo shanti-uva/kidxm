@@ -3,8 +3,9 @@
 // TODO: refactor settings so you can pass these on the command line!
 process.env.solr_write_user = "solradmin";
 process.env.solr_write_password = "IdskBsk013";
-process.env.solr_write_force = false;
+// process.env.solr_write_force = true;
 process.env.solr_write_stalethresh = 360000 * 1000; // (3600 seconds)
+process.env.solr_log_level |= 'debug';
 
 /**
  *
@@ -12,7 +13,7 @@ process.env.solr_write_stalethresh = 360000 * 1000; // (3600 seconds)
  *
  * Created by ys2n on 11/28/16.
  */
-var log = require('tracer').colorConsole({level: 'warn'});
+var log = require('tracer').colorConsole({level: process.env.solr_log_level});
 const pkg = require('../package');
 const prog = require('commander');
 const solr = require('solr-client');
@@ -203,8 +204,9 @@ var addDeleteDoc = function (docs, callback) {
 };
 
 process.on('uncaughtException', function (err) {
+    log.error("%j", arguments);
     log.error(err.stack);
-    log.log("Node NOT Exiting...");
+    log.error("Node NOT Exiting...");
 });
 
 
@@ -228,7 +230,9 @@ prog.command("populate <start-kmapid>")
     .action(function (domain, options) {
         var opts = parseOptions(options);
 
-        process.env.solr_write_force = opts.force;
+        if (opts.force) {
+            process.env.solr_write_force = opts.force;
+        }
 
         log.info("Running Populate for %s with options %s", domain, JSON.stringify(opts, undefined, 2));
 

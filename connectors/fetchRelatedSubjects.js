@@ -1,7 +1,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
-const log = require('tracer').colorConsole({level:'warn'});
+const log = require('tracer').colorConsole({level:process.env.solr_log_level});
 var http = require('http');
 var flatten = require('../connectors/flattenRelatedSubjects').flattenRelatedSubjects;
 const async = require('async');
@@ -49,7 +49,7 @@ exports.fetchRelatedSubjects = function (kmapid,callback) {
                 res.on('end', function () {
                     try {
                         var ret = raw.join('');
-                        log.info("%s %s",restCall,ret);
+                        log.info("%s",ret);
                         var list = JSON.parse(ret);
                         var result = flatten(kmapid,list);
                         callback(null, result);

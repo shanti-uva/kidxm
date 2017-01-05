@@ -1,4 +1,4 @@
-const log = require('tracer').colorConsole({level: 'warn'});
+const log = require('tracer').colorConsole({level: process.env.solr_log_level});
 
 // debugging flags
 var debugRelatedSubjects = false;
@@ -28,7 +28,10 @@ exports.getDocument = function (uid, getDocumentCallback) {
     // console.error(new Error("poop:").stack);
     log.info("getDocument: " + uid);
 
-    var FORCE_WRITE = (process.env.solr_write_force === true);
+    var FORCE_WRITE = process.env.solr_write_force;
+
+    log.info("FORCE WRITE = " + FORCE_WRITE);
+
     if (process.env.solr_write_user) {
         log.info("process.env.solr_write_user: " + process.env.solr_write_user);
     } else {
@@ -53,7 +56,7 @@ exports.getDocument = function (uid, getDocumentCallback) {
 
     log.debug(filepath + " exists? " + fs.existsSync(filepath));
 
-    var modtime = (fs.existsSync(filepath)) ? fs.statSync(filepath).mtime : 0;
+    var modtime = (fs.existsSync(filepath)) ? fs.statSync(filepath).mtime : 0;   // TODO:  mtime is INCORRECT
     var staletime = now - modtime;
     const scalefactor = 1000; // (one second)
     const stalethresh = process.env.solr_write_stalethresh || 100 * scalefactor;
@@ -62,7 +65,6 @@ exports.getDocument = function (uid, getDocumentCallback) {
     log.debug("modtime   = " + modtime);
     log.debug("staletime = " + staletime / scalefactor);
     log.debug("stalethresh = " + stalethresh / scalefactor);
-
 
     if (FORCE_WRITE || (staletime > stalethresh)) {
         log.info("stale or missing entry found: " + uid + "( staletime: " + staletime + " stalethresh: " + stalethresh + " FORCE_WRITE:  " + FORCE_WRITE);
@@ -81,7 +83,7 @@ exports.getDocument = function (uid, getDocumentCallback) {
                                     log.info("Success from solrclient [ %s ]: %j ", uid, _.map(obj.response.docs, function (d) {
                                         return d.uid + " (" + d.header + ")"
                                     }));
-                                    // log.error("%j",obj);
+                                    // log.debug(JSON.stringify(obj, undefined, 3));
                                     cb(null, obj);
                                 }
                             });
@@ -94,15 +96,21 @@ exports.getDocument = function (uid, getDocumentCallback) {
                     },
                     function (solrResp, callback) {
                         try {
-                            // if(true) // log.info("%j",solrResp, {depth: 2, colors: true});
+                            if(true) log.info(JSON.stringify(solrResp,undefined,2));
+
 
                             // null guard for when solr query returns nothing
                             if (!solrResp.response || !solrResp.response.docs || solrResp.response.docs.length === 0) {
+                                log.info("No response! NULL RETURNED");
+                                log.info(JSON.stringify(solrResp, undefined, 2));
                                 callback(null, []);
                                 return;
                             }
 
                             kmapid = solrResp.response.docs[0].uid;
+
+                            log.info("Calling in parallel to fetchRelatedSubjects and fetchRelatedPlaces with kmapid = " + kmapid);
+
 
                             // if (false && staletime > 600000000) {
                             async.parallel([
