@@ -1,6 +1,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
+
 const log = require('tracer').colorConsole({level:'warn'});
 
 var debugRelatedKmaps = false;
@@ -136,7 +137,7 @@ exports.flattenRelationTypes = function (kmapid, relation_types) {
                     var flattened = {};
                     flattened["id"] = category_id + "_" + feature.id;
                     // flattened["uid"] = category_id + "_" + feature.id
-                    flattened["child_type"] = child_type;
+                    flattened["block_child_type"] = child_type;
                     flattened[child_type + "_id_s"] = type + "-" + feature.id;
                     flattened[child_type + "_header_s"] = feature.header;
                     flattened[child_type + "_path_s"] = ancestorsToPath(feature.ancestors);

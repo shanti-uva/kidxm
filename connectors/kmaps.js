@@ -9,6 +9,7 @@ var http = require('http');
 var crypto = require('crypto');
 var util = require('util');
 var domain = require('domain');
+var log = require('tracer').colorConsole({level:'warn'});
 // var async = require('async');
 
 
@@ -60,8 +61,8 @@ exports.getKmapsDocument = function (kmapid, callback) {
     var dom = domain.create();
 
     dom.on('error', function(er) {
-        console.trace("UnCaught exception!");
-        console.error(er.stack);
+        log.warn("UnCaught exception!");
+        log.error(er.stack);
         callback(er);
     });
 
@@ -85,9 +86,7 @@ exports.getKmapsDocument = function (kmapid, callback) {
                     //  - HPE_INVALID_STATUS
                     //  - ... (other HPE_* codes) - server returned garbage
 
-                    console.log("WHACKA")
-
-                    console.log(e);
+                    log.error(e);
                     callback(null, null);
                 });
                 res.on('data', function (chunk) {

@@ -37,10 +37,23 @@ var term_index_options = {
 //};
 
 var asset_client = solr.createClient(asset_index_options);
-asset_client.basicAuth("solradmin","");  // TODO: REFACTOR
+
+if (process.env.solr_write_user) {
+    log.debug("process.env.solr_write_user: " + process.env.solr_write_user);
+} else {
+    log.warn("process.env.solr_write_user is not set!");
+}
+
+if (process.env.solr_write_password) {
+    log.debug("process.env.solr_write_password: ( length: %s )", process.env.solr_write_password.length);
+} else {
+    log.info("process.env.solr_write_password is not set!");
+}
+
+asset_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);  // TODO: REFACTOR
 
 var term_client = solr.createClient(term_index_options);
-term_client.basicAuth("solradmin","");  // TODO: REFACTOR
+term_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);  // TODO: REFACTOR
 
 exports.term_index_options = term_index_options;
 exports.asset_index_options = asset_index_options;
@@ -194,7 +207,6 @@ exports.getTermCheckSum = function (uid, callback) {
     }
 };
 
-
 exports.addTerms = function (terms, callback, commit) {
     commit = commit || true;
     term_client.autoCommit = true;
@@ -225,5 +237,29 @@ exports.getAssetDocs = function (service, callback) {
             callback(null, obj.response.docs);
         }
     });
+};
+
+exports.removeTerm = function (uid, callback) {
+    // if (!_.isEmpty(user_pwd_auth)) {
+    //     term_client.basicAuth(user_pwd_auth);
+    // }
+    log.info("removeDoc called with uid = " + uid + " and callback = " + callback);
+    term_client.autoCommit = false;
+    term_client.delete("uid", uid, function (err, report) {
+        if (err) {
+            log.info("%j", err);
+            term_client.rollback(err, function () {
+            });   // anything to handle after a rollback?
+        } else {
+            log.info("%j", report);
+            term_client.commit();
+        }
+        term_client.autoCommit = true;
+        if (callback) {
+            callback(err, report);
+        }
+    });
+
+
 };
 
