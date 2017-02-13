@@ -1,6 +1,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
+'use strict'
 const log = require('tracer').colorConsole({level: process.env.solr_log_level||'warn'});
 var debugRelatedSubjects = false;
 var _ = require('underscore');

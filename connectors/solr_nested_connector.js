@@ -1,3 +1,5 @@
+'use strict';
+
 //  Design pattern assumes module is a Singleton.
 
 const log = require('tracer').colorConsole({level: process.env.solr_log_level || 'warn'});
@@ -108,7 +110,7 @@ exports.getDocument = function (uid, documentCallback) {
                 const childDocuments = ret[0]._childDocuments_;
                 log.error("[ %s ] returning document (%s) with %d children", uid, ret[0].header, childDocuments.length);
                 for (var i=0; i < childDocuments.length; i++) {
-                    doco = childDocuments[i];
+                    var doco = childDocuments[i];
                     log.debug("%j", doco);
                     log.info("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
                 }

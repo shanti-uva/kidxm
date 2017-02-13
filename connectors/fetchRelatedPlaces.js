@@ -1,6 +1,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
+'use strict';
 const log = require('tracer').colorConsole({level:'warn'});
 const http = require('http');
 const flattenRelationTypes = require('../connectors/flattenRelationTypes').flattenRelationTypes; //different
@@ -9,7 +10,6 @@ const async = require('async');
 const _ = require("underscore");
 const JSON = require("circular-json");
 const url = require('url');
-const xpath = require('JSXpath');
 
 exports.fetchRelatedPlaces = function (kmapid,callback) {
 
@@ -24,13 +24,13 @@ exports.fetchRelatedPlaces = function (kmapid,callback) {
     log.debug("fetchRelatedPlaces type = " + type);
     log.debug("kid = " + kid);
 
-    restCallPlaces = {
+    var restCallPlaces = {
         protocol: "http:",
         hostname: 'places.kmaps.virginia.edu',
         pathname: '/features/' + kid + "/related.json"
     };
 
-    restCallSubjects = {
+    var restCallSubjects = {
         protocol: "http:",
         hostname: 'places.kmaps.virginia.edu',
         pathname: '/topics/' + kid + ".json"

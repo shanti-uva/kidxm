@@ -34,7 +34,6 @@
     "commander": "^2.9.0",
     "debug": "^2.3.3",
     "extend": "^3.0.0",
-    "jsxpath": "^1.0.0-alpha.1",
     "solr-client": "^0.6.0",
     "tracer": "^0.8.7",
     "traverse": "^0.6.6",
