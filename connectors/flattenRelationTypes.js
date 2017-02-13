@@ -140,12 +140,16 @@ exports.flattenRelationTypes = function (kmapid, relation_types) {
                     flattened["block_child_type"] = child_type;
                     flattened[child_type + "_id_s"] = type + "-" + feature.id;
                     flattened[child_type + "_header_s"] = feature.header;
+                    flattened["related_title_s"] = feature.header;
                     flattened[child_type + "_path_s"] = ancestorsToPath(feature.ancestors);
                     if (category.header) {
                         flattened[child_type + "_feature_type_s"] = category.header;
+                        flattened["related_category_type_s"] = category.header;
                     }
                     if (category.id !== null) {
                         flattened[child_type + "_feature_type_id_s"] = category.id;
+                        flattened["related_category_type_id"] = category.id;
+
                     }
                     if (category.ancestor) {
                         flattened[child_type + "_feature_type_path_s"] = ancestorsToPath(category.ancestors.feature_type);

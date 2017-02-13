@@ -2,11 +2,15 @@
  * Created by ys2n on 7/18/14.
  */
 
-var solr = require('solr-client');
-var async = require('async');
-var log = require('tracer').colorConsole({level: 'warn'});
+const solr = require('solr-client');
+const async = require('async');
+const log = require('tracer').colorConsole({
+    level:process.env.solr_log_level||'warn',
+    format : "{{timestamp}} <{{title}}> {{message}} (in {{path}}:{{line}})",
+    dateformat : "HH:MM:ss.L"
+});
 
-var asset_index_options = {
+const DEFAULT_ASSET_INDEX_OPTIONS = {
     'host': 'ss558499-us-east-1-aws.measuredsearch.com',
     'port': 443,
     'secure': true,
@@ -14,51 +18,23 @@ var asset_index_options = {
     'core': 'kmassets_dev'
 };
 
-//var asset_index_options = {
-//    'host': 'drupal-index.shanti.virginia.edu',
-//    'port': 80,
-//    'path': '/solr-test',
-//    'core': '/kmindex'
-//};
-
-var term_index_options = {
+var DEFAULT_TERM_INDEX_OPTIONS = {
     'host': 'ss558499-us-east-1-aws.measuredsearch.com',
     'port': 443,
     'secure': true,
     'path': '/solr',
-    'core': 'kmterms_dev'
+    'core': 'kmterms_test'
 };
 
-//var term_index_options = {
-//    'host': 'drupal-index.shanti.virginia.edu',
-//    'port': 80,
-//    'path': '/solr-test',
-//    'core': '/kmterms'
-//};
-
-var asset_client = solr.createClient(asset_index_options);
-
-if (process.env.solr_write_user) {
-    log.debug("process.env.solr_write_user: " + process.env.solr_write_user);
-} else {
-    log.warn("process.env.solr_write_user is not set!");
-}
-
-if (process.env.solr_write_password) {
-    log.debug("process.env.solr_write_password: ( length: %s )", process.env.solr_write_password.length);
-} else {
-    log.info("process.env.solr_write_password is not set!");
-}
-
-asset_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);  // TODO: REFACTOR
-
-var term_client = solr.createClient(term_index_options);
-term_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);  // TODO: REFACTOR
+var asset_index_options = process.env.asset_index_options || DEFAULT_ASSET_INDEX_OPTIONS;
+var term_index_options = process.env.term_index_options || DEFAULT_TERM_INDEX_OPTIONS;
+var asset_client = createSolrClient(asset_index_options);
+var term_client = createSolrClient(term_index_options);
 
 exports.term_index_options = term_index_options;
 exports.asset_index_options = asset_index_options;
 
-exports.addDocs = function (docs, user_pwd_auth, callback) {
+exports.addAssets = function (docs, user_pwd_auth, callback) {
     asset_client.autoCommit = true;
     if (!_.isEmpty(user_pwd_auth)) {
         asset_client.basicAuth(user_pwd_auth);
@@ -75,7 +51,7 @@ exports.addDocs = function (docs, user_pwd_auth, callback) {
 
 };
 
-exports.removeDoc = function (uid, user_pwd_auth, callback) {
+exports.removeAsset = function (uid, user_pwd_auth, callback) {
     if (!_.isEmpty(user_pwd_auth)) {
         asset_client.basicAuth(user_pwd_auth);
     }
@@ -103,7 +79,7 @@ exports.lastUpdated = function (solrclient, uid, callback) {
     solrclient.search(query, function (err, obj) {
         if (err) {
 
-            log.info("lastUpdated() Error using solrclient: " + JSON.stringify(solrclient.options));
+            log.info("lastUpdated() Error using solr_client: " + JSON.stringify(solrclient.options));
             log.info("%j", err);
         } else {
             console.log("assetLastUpdated(): " + JSON.stringify(obj, undefined, 2));
@@ -210,8 +186,8 @@ exports.getTermCheckSum = function (uid, callback) {
 exports.addTerms = function (terms, callback, commit) {
     commit = commit || true;
     term_client.autoCommit = true;
-    log.debug("adding to " + JSON.stringify(term_index_options));
-    term_client.add(terms, function (err, report) {
+    log.debug("adding to " + JSON.stringify(DEFAULT_TERM_INDEX_OPTIONS));
+    term_client.update(terms,{ commitWithin: 6000, overwrite: true },function (err, report) {
         if (err) {
             log.log(err);
         } else {
@@ -222,6 +198,26 @@ exports.addTerms = function (terms, callback, commit) {
         }
         callback(err, report);
     });
+
+
+
+
+
+
+
+
+
+    // term_client.add(terms, function (err, report) {
+    //     if (err) {
+    //         log.log(err);
+    //     } else {
+    //         // log.log(report);
+    //         if (commit) {
+    //             term_client.commit();
+    //         }
+    //     }
+    //     callback(err, report);
+    // });
 };
 
 exports.getAssetDocs = function (service, callback) {
@@ -259,7 +255,55 @@ exports.removeTerm = function (uid, callback) {
             callback(err, report);
         }
     });
-
-
 };
 
+exports.removeTermByQuery = function (query, callback) {
+    // if (!_.isEmpty(user_pwd_auth)) {
+    //     term_client.basicAuth(user_pwd_auth);
+    // }
+    log.info("removeDoc called with query = " + query + " and callback = " + callback);
+    term_client.autoCommit = false;
+    term_client.deleteByQuery(query, function (err, report) {
+        if (err) {
+            log.info("%j", err);
+            term_client.rollback(function () {
+                log.error("Rollback of delete! " + query);
+            });   // anything to handle after a rollback?
+        } else {
+            log.info("%j", report);
+            term_client.commit();
+        }
+        term_client.autoCommit = true;
+        if (callback) {
+            callback(err, report);
+        }
+    });
+};
+
+function createSolrClient(sourceConfig, readOnly) {
+    if (readOnly===undefined) {
+        readOnly = true;
+    }
+    if (!sourceConfig) {
+        log.error("Must specify sourceConfig");
+    }
+    var solr_client = solr.createClient(sourceConfig);
+    if (!readOnly) {
+        if (process.env.solr_write_user) {
+            log.info("process.env.solr_write_user: " + process.env.solr_write_user);
+        } else {
+            log.warn("process.env.solr_write_user is not set!");
+        }
+        if (process.env.solr_write_password) {
+            log.info("process.env.solr_write_password: ( length: %s )", process.env.solr_write_password.length);
+        } else {
+            log.warn("process.env.solr_write_password is not set!");
+        }
+        solr_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);
+    } else {
+        log.info ("Readonly mode");
+    }
+    return solr_client;
+}
+
+exports.createSolrClient = createSolrClient;

@@ -3,6 +3,8 @@
  */
 // const debug = require('debug')('solrnested_connector_test');
 
+
+const kmapid_fixtures = require('./fixtures').kmapid_fixtures;
 const solrmanager = require('../connectors/solr_manager');
 const solrnested = require('../connectors/solr_nested_connector');
 const chalk = require('chalk');
@@ -10,7 +12,7 @@ const async = require('async');
 const log = require('tracer').colorConsole();
 const _ = require('underscore');
 
-// init: solrclient
+// init: solr_client
 const solr = require('solr-client');
 const sourceConfig = {
     'host': 'ss558499-us-east-1-aws.measuredsearch.com',
@@ -20,20 +22,11 @@ const sourceConfig = {
     'core': 'kmterms_dev'
 }
 var solrclient = solr.createClient(sourceConfig);
+const OUTDIR = "./test-outdir";
+const FORCEWRITETRUE = true;
+const FORCEWRITEFALSE = false;
 
-kmapid_fixtures = [
-    // {type: "places", id: "places-637", name: "Lhasa"},
-    {type: "places", id: "places-22675", name: ""},
-    // {type: "subjects", id: "subjects-6403", name: "Tibet and Himalayas"},
-    // {type: "subjects", id: "subjects-2328", name: "By pupose to be achieved"},
-    // {type: "subjects", id: "subjects-829", name: ""},
-    // {type: "places", id: "places-13656", name: "United States of America"},
-    // {type: "places", id: "places-13736", name: ""},
-    // {type: "places", id: "places-433", name: "Sera Monastery"},
-    // {type: "places", id: "places-434", name: ""},
-    // {type: "places", id: "places-2", name: "Tibet Autonomous Region"},
-    // {type: "places", id: "places-435", name: ""},
-];
+
 
 if (false) {
     exports["addDocument"] = function (test) {
@@ -44,7 +37,7 @@ if (false) {
             solrmanager.addTerms(doc, function () {
 
                 log.info("solrmanager.addDoc()");
-                log.info("%d",arguments);
+                log.info("%d", arguments);
 
             });
             test.ok(true);
@@ -63,9 +56,12 @@ if (true) {
                 process.env.solr_write_force = false;
                 process.env.solr_write_stalethresh = 360000 * 1000; // (3600 seconds)
 
-                solrnested.getDocument(x.id, function(x,y) {
+
+                var func = function (x, y) {
                     console.error(JSON.stringify(y, undefined, 2));
-                })
+                }
+
+                solrnested.getDocument(x.id, func, OUTDIR, FORCEWRITETRUE);
 
                 test.expect(1);
 
@@ -92,18 +88,14 @@ var addDocTodSolr = function (err, resp) {
 };
 
 
-
 /* */
 var worker = function (solrResp, success_cb) {
     //   Expecting a solr JSON document
     //   callback will return a success object to the callback
 
-        log.info("======> %j",solrResp);
-        success_cb({ success:true });
+    log.info("======> %j", solrResp);
+    success_cb({success: true});
 }
-
-
-
 
 
 if (false) {
@@ -122,7 +114,7 @@ if (false) {
 
 
                 var testcallback = function () {
-                    log("TEST CALLBACK: %j",arguments);
+                    log("TEST CALLBACK: %j", arguments);
                     test.ok(false);
                     test.done();
                 }
@@ -137,31 +129,19 @@ if (false) {
 
 
                 q = async.queue(worker, POOLSIZE);
-                getKmapDocTree('*','places-433', function(err, docs) {
+                getKmapDocTree('*', 'places-433', function (err, docs) {
                     log.warn("pushing to the queue: " + JSON.stringify(docs, undefined, 3));
-                    q.push(docs,testcallback);
+                    q.push(docs, testcallback);
                 });
 
-                q.drain(   function() {
+                q.drain(function () {
 
                     console.error("I'm so drained!");
                 })
 
                 while (q.running > 0) {
-                    console.log (".");
+                    console.log(".");
                 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             }
@@ -183,7 +163,7 @@ if (false) {
 //                     log.info(chalk.blue("##########################"));
 //                 }
 //
-//                 solrmanager.addDocs(docs, function () {
+//                 solrmanager.addAssets(docs, function () {
 //                     log.info("solrmanager.addDoc()");
 //                     log.info("%d",arguments);
 //                 });

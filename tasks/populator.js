@@ -89,7 +89,7 @@ exports.populateIndexByKMapId = function(kmapid, callback) {
 //    console.trace("calling getDocumentsByKmapId with kmapid = " + kmapid);
     exports.getDocumentsByKMapId(kmapid,
             function (err, docs) {
-                sm.addDocs(docs,callback);
+                sm.addAssets(docs,callback);
                 // console.log("ADDED: " + JSON.stringify(docs,undefined,2));
             }
     )
@@ -99,7 +99,7 @@ exports.populateIndexByKMapIdStale = function(kmapid, staletime, callback) {
     exports.getDocumentsByKMapIdStale(kmapid,
         staletime,
         function (err, docs) {
-            sm.addDocs(docs, callback);
+            sm.addAssets(docs, callback);
             // console.log("ADDED: " + JSON.stringify(docs,undefined,2));
         }
     )
@@ -140,7 +140,7 @@ exports.populateIndexByServiceId = function (serviceConnector, id, callback) {
     } else {
             console.log("ADDING TO SOLR");
             // console.dir(doc);
-            sm.addDocs([doc], callback);
+            sm.addAssets([doc], callback);
         }
     });
 };
