@@ -2,6 +2,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
+const TIMEOUT = 1 * 1000;  // TIMEOUT in millis
 const log = require('tracer').colorConsole({level:process.env.solr_log_level||'warn'});
 const http = require('http');
 const url = require('url');
@@ -53,7 +54,7 @@ exports.fetchRelatedSubjects = function (kmapid,callback) {
 
     log.info("====> [ %s ] %s %s", kmapid, whichRest, whichFlat );
 
-    http.request(restCall, function (res) {
+    var req = http.request(restCall, function (res) {
         var raw = [];
         res.setEncoding('utf8');
         res.on('error', function (e) {
@@ -67,9 +68,9 @@ exports.fetchRelatedSubjects = function (kmapid,callback) {
         res.on('end', function () {
             try {
                 var ret = raw.join('');
-                log.debug("%s",ret);
+                log.debug("%s", ret);
                 var list = JSON.parse(ret);
-                var result = flatten(kmapid,list);
+                var result = flatten(kmapid, list);
                 log.debug("calling back with %j", result);
                 callback(null, result);
             }
@@ -84,6 +85,13 @@ exports.fetchRelatedSubjects = function (kmapid,callback) {
                 res.resume();
             }
         });
-    }).end();
+    });
+    req.on('socket', function (socket) {
+        socket.setTimeout(TIMEOUT);
+        socket.on('timeout', function () {
+            req.abort();
+        });
+    });
+    req.end();
 
 };

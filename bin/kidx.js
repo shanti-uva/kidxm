@@ -25,7 +25,7 @@ const target_index_options = {
     'port': 443,
     'path': '/solr',
     'secure': true,
-    'core': 'kmterms_test'
+    'core': 'kmterms_dev'
 };
 const default_options = {
     config: null,
@@ -33,6 +33,7 @@ const default_options = {
     solrServer: null,
     filterQuery: null,
     singleMode: false,
+    reverse: false,
     verbose: false,
     force: false,
     clear: false,
@@ -55,9 +56,9 @@ const extend = require('extend');
 const async = require('async');
 const _ = require("underscore");
 
-const TIMEOUT = 120 * 1000; // in millisecs
+const TIMEOUT = 45 * 1000; // in millisecs
 const solrmanager = require('../connectors/solr_manager');
-const rawGetNestedDocument = async.timeout(require('../connectors/solr_nested_connector').getDocument,TIMEOUT);
+const rawGetNestedDocument = async.timeout(require('../connectors/solr_nested_connector').getDocument,60 * 1000);
 const POOLSIZE = 1;
 
 // Caching
@@ -107,10 +108,15 @@ const fsStore = require("cache-manager-fs-binary");
                     }, cb);
                 };
                 var sortvalue = function (x) {
-                    const s = x.level_i + "/" + x.id + "/" + x.ancestor_id_path;
+                    var s = x.level_i + "/" + x.id + "/" + x.ancestor_id_path;
                     return s;
                 }
                 var uniq_docs = _.uniq(_.sortBy(docs, sortvalue), false, sortvalue); // Use path for uniqueness
+                if (opts.reverse) {
+                    log.error("Reversing list");
+                    uniq_docs = uniq_docs.reverse();
+                }
+
                 log.warn('number of DOCS: %d', uniq_docs.length);
 
                 var total_count = uniq_docs.length;
@@ -251,6 +257,7 @@ const fsStore = require("cache-manager-fs-binary");
             zanzibar: null,
             poodlebutt: undefined,
             singleMode: options.singleMode,
+            reverse: options.reverse,
             clear: options.clear
         };
 
@@ -323,7 +330,7 @@ const fsStore = require("cache-manager-fs-binary");
 // MAIN  -- Set up commandline utility
 //
     process.on('uncaughtException', function (err) {
-        log.error("%j", err);
+        log.error(JSON.stringify(err,undefined, 2));
         log.error(err.stack);
         log.error("Node NOT Exiting...");
     });
@@ -346,6 +353,7 @@ const fsStore = require("cache-manager-fs-binary");
         .alias("pop")
         .description("populate starting from <start-kmapid>")
         .option('-1 --one', "Just do this one.  Do not recurse to through children.")
+        .option('-r --reverse', "Reverse the list of kmapid's")
         .option('-F --force', "force updates.  Ignoring usual update checks.")
         .option('-d --delete', "delete existing entries first.")
         .option('-C, --clear', 'clear index (for domain) first')

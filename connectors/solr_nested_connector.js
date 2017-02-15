@@ -33,7 +33,6 @@ const solr_client = sm.createSolrClient(readSolrConfig);
 exports.getDocument = function (uid, documentCallback) {
     log.info("getDocument: " + uid);
     // try {
-    const TIMEOUT = 10000;
     async.waterfall(
         [
             function (cb) {
@@ -68,7 +67,7 @@ exports.getDocument = function (uid, documentCallback) {
 
                     const kmapid = solrResp.response.docs[0].uid;
 
-                    log.info("Calling in parallel to fetchRelatedSubjects and fetchRelatedPlaces with kmapid = " + kmapid);
+                    log.error("Calling in parallel to fetchRelatedSubjects and fetchRelatedPlaces with kmapid = " + kmapid);
 
                     async.parallel([
                             async.apply(fetchRelatedSubjects, kmapid),
@@ -104,7 +103,7 @@ exports.getDocument = function (uid, documentCallback) {
         function (err, ret) {
             log.debug("Final getDocument callback:  %s ERR: %j, RET: %j", uid, err, ret);
             if (err) {
-                log.error("[ %s ] Error in final getDocument callback: %j", uid, err);
+                log.error("[ %s ] Error in final getDocument callback: %s", uid, JSON.stringify(err, undefined,2));
                 documentCallback(err);
             } else {
                 const childDocuments = ret[0]._childDocuments_;
@@ -112,7 +111,7 @@ exports.getDocument = function (uid, documentCallback) {
                 for (var i=0; i < childDocuments.length; i++) {
                     var doco = childDocuments[i];
                     log.debug("%j", doco);
-                    log.info("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
+                    log.error("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
                 }
 
                 documentCallback(null, ret);
