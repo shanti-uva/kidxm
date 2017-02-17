@@ -2,7 +2,7 @@
 /**
  * Created by ys2n on 12/7/16.
  */
-const TIMEOUT = 1 * 1000;  // TIMEOUT in millis
+const TIMEOUT = 1200 * 1000;  // TIMEOUT in millis
 const log = require('tracer').colorConsole({level:process.env.solr_log_level||'warn'});
 const http = require('http');
 const url = require('url');
@@ -88,10 +88,24 @@ exports.fetchRelatedSubjects = function (kmapid,callback) {
     });
     req.on('socket', function (socket) {
         socket.setTimeout(TIMEOUT);
-        socket.on('timeout', function () {
+        socket.on('timeout', function (err) {
             req.abort();
+            callback(err);
+        });
+        socket.on('error',function (err) {
+            req.abort();
+            callback(err);
         });
     });
+
+
+    req.on('error', function(err) {
+        console.error("Connection lost!");
+        console.error(err);
+        req.abort();
+        callback(err);
+    });
+
     req.end();
 
 };

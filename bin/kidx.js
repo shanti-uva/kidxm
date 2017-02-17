@@ -48,6 +48,9 @@ var log = require('tracer').colorConsole({level: process.env.solr_log_level});
  *
  * Created by ys2n on 11/28/16.
  */
+
+
+require("longjohn");
 const JSON = require('circular-json');
 const pkg = require('../package');
 const command = require('commander');
@@ -56,9 +59,9 @@ const extend = require('extend');
 const async = require('async');
 const _ = require("underscore");
 
-const TIMEOUT = 45 * 1000; // in millisecs
+const TIMEOUT = 600 * 1000; // in millisecs
 const solrmanager = require('../connectors/solr_manager');
-const rawGetNestedDocument = async.timeout(require('../connectors/solr_nested_connector').getDocument,60 * 1000);
+const rawGetNestedDocument = async.timeout(require('../connectors/solr_nested_connector').getDocument,TIMEOUT);
 const POOLSIZE = 1;
 
 // Caching
@@ -239,7 +242,7 @@ const fsStore = require("cache-manager-fs-binary");
                     }
                     callback(null, report);
                 }
-            });
+            }).on('error', function(x) { console.error("BOMB2", x); process.exit(1)});
         } else {
             log.info("Doclist is empty.");
             callback(null, {message: "nuttin\' doin\'"});
@@ -332,6 +335,9 @@ const fsStore = require("cache-manager-fs-binary");
     process.on('uncaughtException', function (err) {
         log.error(JSON.stringify(err,undefined, 2));
         log.error(err.stack);
+        if (err.code === 'ECONNRESET') {
+            process.exit(1);
+        }
         log.error("Node NOT Exiting...");
     });
 

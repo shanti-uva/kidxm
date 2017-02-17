@@ -2,7 +2,7 @@
  * Created by ys2n on 12/7/16.
  */
 'use strict';
-const TIMEOUT = 120 * 1000; // TIMEOUT in millis
+const TIMEOUT = 1200 * 1000; // TIMEOUT in millis
 const log = require('tracer').colorConsole({level: 'warn'});
 const http = require('http');
 const flattenRelationTypes = require('../connectors/flattenRelationTypes').flattenRelationTypes; //different
@@ -106,5 +106,14 @@ exports.fetchRelatedPlaces = function (kmapid, callback) {
             req.abort();
         });
     });
+
+    req.on('error', function(err) {
+        console.error("Connection lost!");
+        console.error(err);
+        req.abort();
+        callback(err);
+    });
+
+
     req.end();
 };

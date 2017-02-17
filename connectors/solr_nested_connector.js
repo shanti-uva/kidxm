@@ -51,7 +51,13 @@ exports.getDocument = function (uid, documentCallback) {
                         // log.debug(JSON.stringify(obj, undefined, 3));
                         cb(null, obj);
                     }
-                });
+                }).on('error',
+                    function(oink) {
+                        console.error("ERROR");
+                        console.dir(oink);
+                    }
+
+                );
             },
             function (solrResp, callback) {
                 try {
