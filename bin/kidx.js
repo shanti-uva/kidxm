@@ -1,15 +1,22 @@
 #!/usr/bin/env node
 
 // TODO: refactor settings so you can pass these on the command line!
-process.env.solr_write_user = "solradmin";
-process.env.solr_write_password = "IdskBsk013";
+// process.env.solr_write_user = "solradmin";
+// process.env.solr_write_password = "IdskBsk013";
+
+process.env.solr_write_user = "solrprod";
+process.env.solr_write_password = "QiscMU5ho2q";
+
 // process.env.solr_write_force = true;
 process.env.solr_write_stalethresh = 10000 * 3600 * 1000; // (3600 * 1000 ms = 1 hour)
 process.env.solr_log_level = process.env.solr_log_level || 'warn';
 process.env.solr_local_outdir = "./output";
 
+const UPDATE_POOLSIZE = 1;
+const CLEAN_POOLSIZE = 1;
+
 // CONFIGS
-const source_index_options = {
+const target_index_options = {
     // host : host, port : port, core : core, path : path, agent : agent, secure : secure, bigint : bigint, solrVersion: solrVersion
     // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
     'host': 'ss206212-us-east-1-aws.measuredsearch.com',
@@ -18,7 +25,7 @@ const source_index_options = {
     'secure': true,
     'core': 'kmterms'
 };
-const target_index_options = {
+const source_index_options = {
     // host : host, port : port, core : core, path : path, agent : agent, secure : secure, bigint : bigint, solrVersion: solrVersion
     // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
     'host': 'ss558499-us-east-1-aws.measuredsearch.com',
@@ -27,14 +34,18 @@ const target_index_options = {
     'secure': true,
     'core': 'kmterms_dev'
 };
+
 const default_options = {
     config: null,
     kmapsServer: null,
     solrServer: null,
     filterQuery: null,
     singleMode: false,
+    timings:false,
+    sampleCount: 0,
     reverse: false,
     verbose: false,
+    quiet: false,
     force: false,
     clear: false,
     logLevel: 'warn'
@@ -62,7 +73,6 @@ const _ = require("underscore");
 const TIMEOUT = 600 * 1000; // in millisecs
 const solrmanager = require('../connectors/solr_manager');
 const rawGetNestedDocument = async.timeout(require('../connectors/solr_nested_connector').getDocument,TIMEOUT);
-const POOLSIZE = 1;
 
 // Caching
 const cacheManager = require("cache-manager");
@@ -120,13 +130,24 @@ const fsStore = require("cache-manager-fs-binary");
                     uniq_docs = uniq_docs.reverse();
                 }
 
-                log.warn('number of DOCS: %d', uniq_docs.length);
-
+                if (!opts.quiet) {
+                    log.warn('number of DOCS: %d', uniq_docs.length);
+                }
                 var total_count = uniq_docs.length;
 
                 var munge = function (document, index, munge_callback) {
-                    var now = new Date().getTime();
-                    log.warn("Starting %s ( %d/%d ) %j %s", document.id, index, total_count, document.ancestor_id_path, document.header);
+                    if (!opts.quiet) {
+                        log.warn("Starting %s ( %d/%d ) %j %s", document.id, index, total_count, document.ancestor_id_path, document.header);
+                    }
+                    if (opts.timings) { console.time("munge:" + document.id); }
+                    if (opts.sampleCount && index % opts.sampleCount === 0) {
+                        var sampleName = "MUNGE-SAMPLE-" + (parseInt(index/opts.sampleCount)+1);
+                        log.error("TIMER: " + sampleName);
+                        console.time(sampleName);
+                    }
+                    if (opts.sampleCount && index !== 0 && index % opts.sampleCount === 0) {
+                        console.timeEnd("MUNGE-SAMPLE-" + parseInt(index/opts.sampleCount));
+                    }
                     async.waterfall(
                         [
                             async.apply(getNestedDocument, document.id),
@@ -134,19 +155,20 @@ const fsStore = require("cache-manager-fs-binary");
                         ],
                         function post(err, ret) {
                             log.debug("RUNNING POSTPROCESS");
-                            if (!err) {
-                                log.warn("Processed %s ( %d/%d ) %j %s", document.id, index, total_count, document.ancestor_id_path, document.header);
+                            if (!opts.quiet && !err) {
+                                log.warn("Processed %s ( %d/%d ) %j %s", document.id, index + 1, total_count, document.ancestor_id_path, document.header);
                             }
                             else {
                                 log.error("Error: [ %s ] %s", document.id, err);
                             }
                             munge_callback(null, index);
                             // munge_callback(err,index);
+                            if (opts.timings) { console.timeEnd("munge:" + document.id); }
                         }
                     );
                 }
 
-                async.eachOfLimit(uniq_docs, POOLSIZE, munge, function (err, result) {
+                async.eachOfLimit(uniq_docs, UPDATE_POOLSIZE, munge, function (err, result) {
                     log.error("SNARKO! %j", err);
                     log.error("BARKO!  %j", result);
 
@@ -174,6 +196,122 @@ const fsStore = require("cache-manager-fs-binary");
         });
     };
 
+    var clean = function (domain, opts) {
+        log.info("Running Clean for %s", domain);
+
+        var executeJob = function() {
+            log.error("---------->>>>>  IN-MEMORY CACHE REFILLED    <<<<<-------")
+            getKmapDocTree(domain, opts.singleMode, function (err, docs) {
+                // wrap rawGetNestedDocument() in cache
+                var getNestedDocument = function (uid, cb) {
+                    log.info("******** getNestedDocument [ %s ]", uid);
+                    diskCache.wrap(uid, function (cacheCallback) {
+                        log.info("******** [ %s ] retrieving raw document...", uid);
+                        rawGetNestedDocument(uid, cacheCallback);
+                    }, cb);
+                };
+                var sortvalue = function (x) {
+                    var s = x.level_i + "/" + x.id + "/" + x.ancestor_id_path;
+                    return s;
+                }
+                var uniq_docs = _.uniq(_.sortBy(docs, sortvalue), false, sortvalue); // Use path for uniqueness
+                if (opts.reverse) {
+                    log.error("Reversing list");
+                    uniq_docs = uniq_docs.reverse();
+                }
+
+                log.error('number of DOCS: %d', uniq_docs.length);
+
+                var total_count = uniq_docs.length;
+
+                var scrub = function (document, index, scrub_callback) {
+                    if (!opts.quiet) log.warn("Cleaning %s ( %d/%d ) %j %s", document.id, index + 1, total_count, document.ancestor_id_path, document.header);
+
+                    var uid = document.id;
+                    if (opts.sampleCount && index % opts.sampleCount === 0) {
+                        var sampleName = "CLEAN-SAMPLE-" + (parseInt(index/opts.sampleCount)+1);
+                        log.error("TIMER: " + sampleName);
+                        console.time(sampleName);
+                    }
+                    if (opts.sampleCount && index !== 0 && index % opts.sampleCount === 0) {
+                        console.timeEnd("CLEAN-SAMPLE-" + parseInt(index/opts.sampleCount));
+                    }
+                    if (opts.timings) { console.time(uid) };
+                    var query = solr_write_client.createQuery()
+                        .q("id:" + uid)
+                        .fl('id,level_i,_timestamp_,block_type,ancestor_id_path,header')
+                        .sort({'level_i': 'asc', 'ancestor_id_path': 'asc', 'id': 'asc'})
+                        .rows(10);
+
+                    solr_write_client.search(query,function (e, fullResp) {
+                        // log.error(query);
+                        log.debug("callback from solr-client.search");
+                        if (e) {
+                            log.debug("Error from solr_client: " + JSON.stringify(solr_read_client.options));
+                            log.error("ERROR:" + e);
+                            scrub_callback(e);
+                        } else {
+                            var count = fullResp.response.docs.length;
+                            log.info("count: " + count);
+                            if (count==0) {
+                                log.error("No Entry  (" + count + ") for " + uid);
+                            } else if ( count > 1 ) {
+                                log.error("Too Many Entries  (" + count + ") for " + uid);
+                                var deleteQ= "id:" + uid + " AND NOT block_type:parent";
+                                solr_write_client.deleteByQuery(deleteQ,
+                                    {commitWithin: 20, overwrite: true},
+                                    function (e, gronk) {
+                                        if (e) {
+                                            log.error("Delete \"" + deleteQ + "\" failed: " + e)
+                                        }
+                                        else {
+                                            log.warn(gronk);
+                                        }
+                                    });
+
+                            }
+                            // log.error("%j", fullResp.response.docs);
+                            scrub_callback(null, fullResp.response.docs);
+                            if(opts.timings){ console.timeEnd(uid) };
+                        }
+                    }).on('error',
+                        function(x,y) {
+                            log.error("BOINGO!");
+                            log.error (x,y);
+                            if(opts.timings){ console.timeEnd(uid); }
+                            process.exit(1);
+                        });
+                }
+
+                async.eachOfLimit(uniq_docs, CLEAN_POOLSIZE, scrub, function (err, result) {
+                    log.error("SNARKO! %j", err);
+                    log.error("BARKO!  %j", result);
+
+                    if (err) {
+                        log.error("Error", err);
+                    }
+                    if (result) {
+                        log.info("RESULT: %j", result);
+                    }
+                });
+            });
+        }
+
+        var diskCache = cacheManager.caching({
+            store: fsStore,
+            options: {
+                preventfill: false,
+                reviveBuffers: true,
+                binaryAsStream: false,
+                ttl: 120 * 60 * 60 * 24 /* seconds */,
+                maxsize: 500000 * 1000 * 1000 * 1000/* max size in bytes on disk */,
+                path: 'diskcache',
+                fillcallback: executeJob
+            }
+        });
+    };
+
+
     const getKmapDocTree = function (uid, singleMode, cb) {
         var s = uid.split('-');
         var type = s[0];
@@ -195,8 +333,9 @@ const fsStore = require("cache-manager-fs-binary");
             .sort({'level_i': 'asc', 'ancestor_id_path': 'asc', 'id': 'asc'})
             .rows(40000);
         var query = (singleMode) ? single_query : ancestors_query;
-        log.warn("singleMode:  %j", singleMode);
-        log.warn("query: %j", query);
+            log.info("singleMode:  %j", singleMode);
+            log.info("query: %j", query);
+
 
         // solr_client.basicAuth(process.env.solr_write_user, process.env.solr_write_password);  // TODO: REFACTOR
         solr_read_client.search(query, function (e, fullResp) {
@@ -222,7 +361,7 @@ const fsStore = require("cache-manager-fs-binary");
             log.debug("addTerms: %j", docs);
 
             delete docs[0]['_timestamp_'];
-            delete docs[0]['_version_'];
+            // delete docs[0]['_version_'];
 
             var doc = docs[0];
 
@@ -242,7 +381,7 @@ const fsStore = require("cache-manager-fs-binary");
                     }
                     callback(null, report);
                 }
-            }).on('error', function(x) { console.error("BOMB2", x); process.exit(1)});
+            }).on('error', function(x) { console.error("Error while writing to Solr for " + doc.id, x); process.exit(1)});
         } else {
             log.info("Doclist is empty.");
             callback(null, {message: "nuttin\' doin\'"});
@@ -255,11 +394,14 @@ const fsStore = require("cache-manager-fs-binary");
             kmapsServer: options.parent.kmapsServer,
             solrServer: options.parent.solrServer,
             verbose: options.parent.verbose,
+            quiet: options.parent.quiet,
             filterQuery: options.filterQuery,
             force: options.force,
             zanzibar: null,
             poodlebutt: undefined,
             singleMode: options.singleMode,
+            timings: options.timings,
+            sampleTime: options.sampleTime,
             reverse: options.reverse,
             clear: options.clear
         };
@@ -326,15 +468,27 @@ const fsStore = require("cache-manager-fs-binary");
         }
 
         log.info("The final set options: %j", opts);
+
+
+
+        log.error("OPTIONS!" + JSON.stringify(opts,undefined,2));
+
+
         return opts;
+
 
     };
 //
 // MAIN  -- Set up commandline utility
 //
     process.on('uncaughtException', function (err) {
+        log.error("UNCAUGHT EXCEPTION: " + err);
         log.error(JSON.stringify(err,undefined, 2));
         log.error(err.stack);
+
+        if (err) {
+            process.exit(1);
+        }
         if (err.code === 'ECONNRESET') {
             process.exit(1);
         }
@@ -349,6 +503,7 @@ const fsStore = require("cache-manager-fs-binary");
         .option('-k --kmaps-server <kmapsBaseUrl>', "specify the kmapsBaseUrl.")
         .option('-s --solr-server <solrBaseUrl>', "specify the solrBaseUrl.")
         .option('-v --verbose', "verbose output")
+        .option('-q --quiet', "quiet output")
         .option('-L --logLevel <logLevel>', "set the logLevel")
         .option('-u --solr-user', "solr username")
         .option('-p --solr-password', "solr user password")
@@ -365,8 +520,18 @@ const fsStore = require("cache-manager-fs-binary");
         .option('-C, --clear', 'clear index (for domain) first')
         .option('-q, --filter-query <filterQuery>', 'SOLR filter query')
         .option('-S --singleMode', "Don't get related kmapids")
-        .action(populate)
+        .option('-t --timings', "Show timings for each remote call")
+        .option('-c --sampleCount <sampleCount>', "Show timings for <sampleCount> samples")
+        .action(populate);
 
+    // Setup clean command
+    command.command("clean <start-kmapid>")
+        .description("clean starting from <start-kmapid>")
+        .option('-S --singleMode', "Don't get related kmapids")
+        .option('-t --timings', "Show timings for each remote call")
+        .option('-c --sampleCount <sampleCount>', "Show timings for <sampleCount> samples")
+        .action(clean);
+    
     // Setup help command
     command.command("help")
         .description("show help")
