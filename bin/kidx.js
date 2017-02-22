@@ -5,7 +5,7 @@
 // process.env.solr_write_password = "IdskBsk013";
 
 process.env.solr_write_user = "solrprod";
-process.env.solr_write_password = "QiscMU5ho2q";
+process.env.solr_write_password = "xxxxxxx";
 
 // process.env.solr_write_force = true;
 process.env.solr_write_stalethresh = 10000 * 3600 * 1000; // (3600 * 1000 ms = 1 hour)
@@ -25,6 +25,7 @@ const target_index_options = {
     'secure': true,
     'core': 'kmterms'
 };
+/*
 const source_index_options = {
     // host : host, port : port, core : core, path : path, agent : agent, secure : secure, bigint : bigint, solrVersion: solrVersion
     // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
@@ -34,6 +35,10 @@ const source_index_options = {
     'secure': true,
     'core': 'kmterms_dev'
 };
+*/
+
+
+const source_index_options = target_index_options;
 
 const default_options = {
     config: null,
@@ -61,7 +66,7 @@ var log = require('tracer').colorConsole({level: process.env.solr_log_level});
  */
 
 
-require("longjohn");
+// require("longjohn");
 const JSON = require('circular-json');
 const pkg = require('../package');
 const command = require('commander');
@@ -256,19 +261,20 @@ const fsStore = require("cache-manager-fs-binary");
                             if (count==0) {
                                 log.error("No Entry  (" + count + ") for " + uid);
                             } else if ( count > 1 ) {
-                                log.error("Too Many Entries  (" + count + ") for " + uid);
+                                log.error("[ %s ] ( %d/%d ) Too Many Entries  (%d)",uid, index+1, total_count,count);
                                 var deleteQ= "id:" + uid + " AND NOT block_type:parent";
                                 solr_write_client.deleteByQuery(deleteQ,
                                     {commitWithin: 20, overwrite: true},
                                     function (e, gronk) {
                                         if (e) {
-                                            log.error("Delete \"" + deleteQ + "\" failed: " + e)
+                                            log.error("[ %s ] ( %d/%d ) Delete failed for \"%s\" : %j",uid,index + 1, total_count,deleteQ,e);
                                         }
                                         else {
-                                            log.warn(gronk);
+                                            log.warn("[ %s ] ( %d/%d ) Delete succesfully executed. Returned: %j", uid, index + 1, total_count, gronk);
                                         }
                                     });
-
+                            } else if (fullResp.response.docs[0].block_type !== "parent") {
+                                log.error ("[ %s ] solr entry does not have block_type field! %j", uid,fullResp.response.docs[0]);
                             }
                             // log.error("%j", fullResp.response.docs);
                             scrub_callback(null, fullResp.response.docs);
@@ -324,6 +330,7 @@ const fsStore = require("cache-manager-fs-binary");
             .q("ancestor_ids_generic:" + id)
             .fl('id,level_i,_timestamp_,block_type,ancestor_id_path,header')
             .matchFilter("tree", type)
+            .rangeFilter({field:"-block_type",start:"\"\"",end:"*"})
             .sort({'level_i': 'asc', 'ancestor_id_path': 'asc', 'id': 'asc'})
             .rows(40000);
         var single_query = solr_read_client.createQuery()
