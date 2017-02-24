@@ -59,7 +59,7 @@ exports.getDocument = function (uid, documentCallback) {
 
                 );
             },
-            function (solrResp, callback) {
+            function (solrResp, cb2) {
                 try {
                     if (false) log.info(JSON.stringify(solrResp, undefined, 2));
 
@@ -67,7 +67,7 @@ exports.getDocument = function (uid, documentCallback) {
                     if (!solrResp.response || !solrResp.response.docs || solrResp.response.docs.length === 0) {
                         log.info("No response! Empty Array returned.");
                         log.info("Solr response: %s", JSON.stringify(solrResp, undefined, 2));
-                        callback(null, []);
+                        cb2(null, []);
                         return;
                     }
 
@@ -85,7 +85,7 @@ exports.getDocument = function (uid, documentCallback) {
                             if (err) {
                                 log.error("ERROR RETRIEVING related subjects or places [" + kmapid + "]: " + err.stack);
                                 log.error("RETURNED NODE: %j", obj);
-                                callback(err);
+                                cb2(err);
                                 return;
                             }
 
@@ -94,20 +94,20 @@ exports.getDocument = function (uid, documentCallback) {
                             new_block["block_type"] = "parent";
                             new_block["_childDocuments_"] = obj;
 
-                            log.debug(chalk.green(JSON.stringify(new_block, undefined, 3)));
+                            // console.log(chalk.green(JSON.stringify(new_block, undefined, 3)));
                             log.debug("======================================== Returning %j", new_block);
-                            callback(null, [new_block]);
+                            cb2(null, [new_block]);
                         }
                     );
                 } catch (err) {
                     log.error(err.stack);
                     log.error("%j", err);
-//                        callback(err);
+                    throw new Error("How did we get here?");
                 }
             }
         ],
         function (err, ret) {
-            log.debug("Final getDocument callback:  %s ERR: %j, RET: %j", uid, err, ret);
+            log.error("Final getDocument callback:  %s ERR: %j, RET: %s", uid, err, ret);
             if (err) {
                 log.error("[ %s ] Error in final getDocument callback: %s", uid, JSON.stringify(err, undefined,2));
                 documentCallback(err);
@@ -119,16 +119,10 @@ exports.getDocument = function (uid, documentCallback) {
                     log.debug("%j", doco);
                     log.error("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
                 }
-
                 documentCallback(null, ret);
             }
         }
     );
-    // } catch (e) {
-    //     log.error("Error in getDocument()");
-    //     log.error(e.stack);
-    //     documentCallback(e);
-    // }
 }
 
 exports.getItemIdList = function (docidlist, callback) {

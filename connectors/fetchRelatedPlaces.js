@@ -2,8 +2,8 @@
  * Created by ys2n on 12/7/16.
  */
 'use strict';
-const TIMEOUT = 1200 * 1000; // TIMEOUT in millis
-const log = require('tracer').colorConsole({level: 'warn'});
+const TIMEOUT = 120 * 1000; // TIMEOUT in millis
+const log = require('tracer').colorConsole({level:(process.env.solr_log_level||'debug')});
 const http = require('http');
 const flattenRelationTypes = require('../connectors/flattenRelationTypes').flattenRelationTypes; //different
 const flattenRelatedPlaces = require("../connectors/flattenRelatedPlaces").flattenRelatedPlaces;
@@ -91,9 +91,9 @@ exports.fetchRelatedPlaces = function (kmapid, callback) {
             }
             catch (err) {
                 log.info(err);
-                log.error(ret);
+                log.info(ret);
                 log.error("Error fetching from url %s: %s", url.format(restCall), err);
-                callback(new Error("error parsing related places: %s " + err.message, err));
+                throw new Error("error parsing related places: %s " + err.message, err);
             }
             finally {
                 res.resume();
@@ -111,7 +111,7 @@ exports.fetchRelatedPlaces = function (kmapid, callback) {
         console.error("Connection lost!");
         console.error(err);
         req.abort();
-        callback(err);
+        // callback(err);
     });
 
 
