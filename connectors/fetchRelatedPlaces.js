@@ -43,13 +43,13 @@ exports.fetchRelatedPlaces = function (kmapid, callback) {
     log.info(" kmapid = " + kmapid);
     log.info(" type = " + type);
 
-    //if (type === "places"){
-    restCall = restCallPlaces;
-    flatten = flattenRelationTypes;
-    // } else {
-    //     restCall = restCallSubjects;
-    //     flatten = flattenRelatedPlaces;
-    // }
+    if (type === "places"){
+        restCall = restCallPlaces;
+        flatten = flattenRelationTypes;
+    } else {
+         restCall = restCallSubjects;
+         flatten = flattenRelatedPlaces;
+    }
 
     log.debug('BASE URL: %s (%j)', url.format(restCall), restCall);
 
@@ -93,7 +93,8 @@ exports.fetchRelatedPlaces = function (kmapid, callback) {
                 log.info(err);
                 log.info(ret);
                 log.error("Error fetching from url %s: %s", url.format(restCall), err);
-                throw new Error("error parsing related places: %s " + err.message, err);
+                // throw new Error("error parsing related places: %s " + err.message, err);
+                callback(err);
             }
             finally {
                 res.resume();

@@ -83,7 +83,7 @@ exports.getDocument = function (uid, documentCallback) {
 
                             // short-circuit on error
                             if (err) {
-                                log.error("ERROR RETRIEVING related subjects or places [" + kmapid + "]: " + err.stack);
+                                log.error("ERROR RETRIEVING related subjects or places [" + kmapid + "]: " + err.messages);
                                 log.error("RETURNED NODE: %j", obj);
                                 cb2(err);
                                 return;
@@ -109,7 +109,7 @@ exports.getDocument = function (uid, documentCallback) {
         function (err, ret) {
             log.error("Final getDocument callback:  %s ERR: %j, RET: %s", uid, err, ret);
             if (err) {
-                log.error("[ %s ] Error in final getDocument callback: %s", uid, JSON.stringify(err, undefined,2));
+                log.error("[ %s ] Error in final getDocument callback: stack length %d", uid, err.stack.length);
                 documentCallback(err);
             } else {
                 const childDocuments = ret[0]._childDocuments_;
@@ -117,7 +117,7 @@ exports.getDocument = function (uid, documentCallback) {
                 for (var i=0; i < childDocuments.length; i++) {
                     var doco = childDocuments[i];
                     log.debug("%j", doco);
-                    log.error("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
+                    log.info("\t[ %s ] %s -- %s",doco.block_child_type,doco.id,doco.related_title_s);
                 }
                 documentCallback(null, ret);
             }

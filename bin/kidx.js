@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 // TODO: refactor settings so you can pass these on the command line!
-// process.env.solr_write_user = "solradmin";
-// process.env.solr_write_password = "IdskBsk013";
+process.env.solr_write_user = "solradmin";
+process.env.solr_write_password = "IdskBsk013";
 
-process.env.solr_write_user = "solrprod";
-process.env.solr_write_password = "QiscMU5ho2q";
+// process.env.solr_write_user = "solrprod";
+// process.env.solr_write_password = "QiscMU5ho2q";
 
 // process.env.solr_write_force = true;
 process.env.solr_write_stalethresh = 10000 * 3600 * 1000; // (3600 * 1000 ms = 1 hour)
@@ -18,24 +18,22 @@ const CLEAN_POOLSIZE = 5;
 // CONFIGS
 const target_index_options = {
     // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
-    'host': 'ss206212-us-east-1-aws.measuredsearch.com',
+    'host': 'ss558499-us-east-1-aws.measuredsearch.com',
     'port': 443,
     'path': '/solr',
     'secure': true,
-    'core': 'kmterms'
+    'core': 'kmterms_dev'
 };
-/*
- const source_index_options = {
- // host : host, port : port, core : core, path : path, agent : agent, secure : secure, bigint : bigint, solrVersion: solrVersion
- // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
- 'host': 'ss558499-us-east-1-aws.measuredsearch.com',
- 'port': 443,
- 'path': '/solr',
- 'secure': true,
- 'core': 'kmterms_dev'
- };
- */
 
+ // const source_index_options = {
+ // // host : host, port : port, core : core, path : path, agent : agent, secure : secure, bigint : bigint, solrVersion: solrVersion
+ // // https://ss558499-us-east-1-aws.measuredsearch.com/solr/kmterms_dev
+ // 'host': 'ss206212-us-east-1-aws.measuredsearch.com',
+ // 'port': 443,
+ // 'path': '/solr',
+ // 'secure': true,
+ // 'core': 'kmterms'
+ // };
 
 const source_index_options = target_index_options;
 
@@ -65,7 +63,7 @@ var log = require('tracer').colorConsole({level: process.env.solr_log_level});
  */
 
 
-require("longjohn");
+// require("longjohn");
 const JSON = require('circular-json');
 const pkg = require('../package');
 const command = require('commander');
@@ -148,7 +146,7 @@ const Events = require('events');
     }
 
     var getNestedDocument = function (uid,force,callback) {
-        log.error("******** getNestedDocument [ %s ] (force = %s callback = %s)", uid, force, callback);
+        log.error("******** getNestedDocument [ %s ] (force = %s callback = %s)", uid, force, typeof callback);
         if (force) {
             rawGetNestedDocument(uid, callback);
         } else {
@@ -183,7 +181,7 @@ const Events = require('events');
 
                 var munge = function (document, index, munge_callback) {
                     if (!opts.quiet) {
-                        log.warn("Starting %s ( %d/%d ) %j %s", document.id, index, total_count, document.ancestor_id_path, document.header);
+                        log.warn("Starting %s ( %d/%d ) %j %s", document.id, index + 1, total_count, document.ancestor_id_path, document.header);
                     }
                     if (opts.timings) {
                         console.time("munge:" + document.id);
@@ -392,8 +390,8 @@ const Events = require('events');
 
         var force = true;
 
-        log.error("ARGUMENTS = %j", arguments);
-        log.error("calling AddDocsToSolr with opts = %j  callback = %j", force, callback);
+        log.info("ARGUMENTS = %j", arguments);
+        log.info("calling AddDocsToSolr with opts = %j  callback = %j", force, callback);
         if (docs && docs.length) {
             log.error("Adding " + docs.length + " docs.");
             log.debug(JSON.stringify(docs, undefined, 3));
